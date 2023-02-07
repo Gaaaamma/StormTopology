@@ -1,4 +1,4 @@
-#=====================================================================#
+#============================ Start Up Storm Cluster =============================#
 # Start up the cluster
 # 1 Start the zookeeper service
 zkServer.sh start
@@ -12,7 +12,7 @@ storm supervisor
 # 4 Start storm UI
 storm ui
 
-#======================================================================#
+#========================== Build Topology ===============================#
 # Compile YYY.java and assign corresponding ClassPath (Some jar file and the path which is concatenated by :)
 javac -cp xxxx.jar:yyy.jar:. YYY.java
 
@@ -25,7 +25,7 @@ cp kkk.jar ~/apache-storm-2.4.0/extlib/
 # Submit the topology to cluster (Under Apache Storm bin directory)
 storm jar ZZZ.jar TopologyClass
 
-#======================================================================#
+#============================ System Java version =============================#
 #Note: Apache Storm 2.4.0 work fine with openjdk-8-jdk
 # 1 Check if openjdk-8-jdk is installed
 sudo apt list openjdk-8-jdk
