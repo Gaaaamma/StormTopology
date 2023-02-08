@@ -2,10 +2,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import com.google.gson.Gson;
 
 // import org.json.JSONObject;
 
@@ -17,22 +17,22 @@ class Test {
             String target = "http://140.113.170.152:32777/users/" + patientID[index % 3];
             index += 1;
 
-			JsonObject jsonObject = new JsonParser().parse(httpRequest("GET", target, target)).getAsJsonObject();
-			System.out.println(jsonObject.get("userId").getAsString());
-			System.out.println(jsonObject.get("lasttime_12lead"));
-			System.out.println(jsonObject.get("subStartTime").getClass());
+			Gson gson = new Gson();
+			User userData = gson.fromJson(httpRequest("GET", target, target), User.class);
+			System.out.println(userData._id);
+			System.out.println(userData.userId);
+			System.out.println(userData.lasttime_3lead);
+			System.out.println(userData.subStartTime);
 
-			Iterator<JsonElement> iterator = jsonObject.get("subStartTime").getAsJsonArray().iterator();
-        	while (iterator.hasNext()) {
-        	    JsonElement element = iterator.next();
-        	    int value = element.getAsInt();
-        	    System.out.println(value);
-        	}
+			// ArrayList<Integer> result = new ArrayList<Integer>();
+			Timestamp t = new Timestamp((long)userData.subStartTime.get(userData.subStartTime.size() - 1) * 1000);
+			Date d = new Date(t.getTime());  
+			System.out.println(d);
+
         } catch (Exception e) {
-
+			System.out.println("Exception: " + e);
         }
     }
-
     public static String httpRequest(String method,String targetUrl,String requestBodyJson) throws Exception {
 		HttpURLConnection connection = null;
 		StringBuffer sb = new StringBuffer("");

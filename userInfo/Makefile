@@ -2,6 +2,7 @@ FINAL_JAR = userInfo.jar
 SPOUT = UserInfoSpout.class
 BOLT = ShowBolt.class
 TOPO = DataBaseTopology.class
+USER = User.class
 STORM_DEP = storm-client-2.4.0.jar
 JSON_DEP = gson-2.2.2.jar
 
@@ -9,11 +10,14 @@ JSON_DEP = gson-2.2.2.jar
 
 all: $(FINAL_JAR)
 
-$(FINAL_JAR): $(SPOUT) $(BOLT) $(TOPO)
-	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(SPOUT) $(BOLT) $(TOPO)
+$(FINAL_JAR): $(USER) $(SPOUT) $(BOLT) $(TOPO)
+	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(USER) $(SPOUT) $(BOLT) $(TOPO)
+
+$(USER): User.java
+	javac $<
 
 $(SPOUT): UserInfoSpout.java
-	javac -cp $(STORM_DEP):$(JSON_DEP) $<
+	javac -cp $(STORM_DEP):$(JSON_DEP):. $<
 
 $(BOLT): ShowBolt.java
 	javac -cp $(STORM_DEP) $<

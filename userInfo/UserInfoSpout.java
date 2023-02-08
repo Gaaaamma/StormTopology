@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.storm.spout.SpoutOutputCollector;
@@ -12,23 +11,18 @@ import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.utils.Utils;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
 
  public class UserInfoSpout extends BaseRichSpout {
     SpoutOutputCollector spoutOutputCollector;
-	JsonObject jsonObject;
-	JsonParser jsonParser;
-	ArrayList<Integer> arrayList;
+	Gson gson;
     private Integer index = 0;
 
     @Override
     public void open(Map<String, Object> conf, TopologyContext context, SpoutOutputCollector collector) {
         // TODO Auto-generated method stub
         this.spoutOutputCollector = collector;
-		this.jsonParser = new JsonParser();
-		this.arrayList = new ArrayList<Integer>();
+		this.gson = new Gson();
     }
 
     @Override
@@ -39,9 +33,11 @@ import com.google.gson.JsonParser;
             String[] patientID = {"NCTU0000", "NCTU0001", "NCTU0002"};
             String target = "http://140.113.170.152:32777/users/" + patientID[index % 3];
             index += 1;
-			jsonObject = jsonParser.parse(httpRequest("GET", target, target)).getAsJsonObject();
-			this.arrayList.add(jsonObject.get("lasttime_12lead").getAsInt());
-            this.spoutOutputCollector.emit(new Values(this.arrayList));
+
+			Gson gson = new Gson();
+			User userData = gson.fromJson(httpRequest("GET", target, target), User.class);
+            this.spoutOutputCollector.emit(new Values(patientID[index % 3], userData.subStartTime));
+
         } catch (Exception e) {
 			System.out.println("Spout exception: " + e);
         }
@@ -50,7 +46,7 @@ import com.google.gson.JsonParser;
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         // TODO Auto-generated method stub
-        declarer.declare(new Fields("data"));
+        declarer.declare(new Fields("patientID", "subStartTime"));
     }
 
     public String httpRequest(String method,String targetUrl,String requestBodyJson) throws Exception {

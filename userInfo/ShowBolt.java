@@ -1,4 +1,6 @@
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.storm.task.OutputCollector;
@@ -17,8 +19,12 @@ public class ShowBolt extends BaseRichBolt {
  
     @Override
     public void execute(Tuple tuple) {
-        ArrayList<Double> list = (ArrayList<Double>) tuple.getValueByField("data");
-        System.out.println("ShowBolt: " + list);
+        String patientID = tuple.getStringByField("patientID");
+        ArrayList<Integer> subStartTime = (ArrayList<Integer>) tuple.getValueByField("subStartTime");
+
+        Timestamp time = new Timestamp((long)subStartTime.get(subStartTime.size() - 1) * 1000);
+		Date date = new Date(time.getTime());  
+		System.out.println("ShowBolt: " + patientID + ", Timestamp: " + subStartTime.get(subStartTime.size() - 1).toString() +", Date: " + date);
     }
  
     @Override
