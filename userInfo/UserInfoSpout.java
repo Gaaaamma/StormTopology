@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.storm.spout.SpoutOutputCollector;
@@ -19,6 +20,7 @@ import com.google.gson.JsonParser;
     SpoutOutputCollector spoutOutputCollector;
 	JsonObject jsonObject;
 	JsonParser jsonParser;
+	ArrayList<Integer> arrayList;
     private Integer index = 0;
 
     @Override
@@ -26,6 +28,7 @@ import com.google.gson.JsonParser;
         // TODO Auto-generated method stub
         this.spoutOutputCollector = collector;
 		this.jsonParser = new JsonParser();
+		this.arrayList = new ArrayList<Integer>();
     }
 
     @Override
@@ -37,9 +40,10 @@ import com.google.gson.JsonParser;
             String target = "http://140.113.170.152:32777/users/" + patientID[index % 3];
             index += 1;
 			jsonObject = jsonParser.parse(httpRequest("GET", target, target)).getAsJsonObject();
-            this.spoutOutputCollector.emit(new Values(jsonObject.get("userId").getAsString()));
+			this.arrayList.add(jsonObject.get("lasttime_12lead").getAsInt());
+            this.spoutOutputCollector.emit(new Values(this.arrayList));
         } catch (Exception e) {
-
+			System.out.println("Spout exception: " + e);
         }
     }
 

@@ -2,7 +2,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.Iterator;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -18,11 +19,15 @@ class Test {
 
 			JsonObject jsonObject = new JsonParser().parse(httpRequest("GET", target, target)).getAsJsonObject();
 			System.out.println(jsonObject.get("userId").getAsString());
+			System.out.println(jsonObject.get("lasttime_12lead"));
+			System.out.println(jsonObject.get("subStartTime").getClass());
 
-			// JSONObject jsonObject = new JSONObject(httpRequest("GET", target, target));
-            // System.out.println(jsonObject.getString("userId"));
-			// System.out.println(jsonObject.get("lasttime_12lead"));
-			// System.out.println(jsonObject.get("subStartTime").getClass());
+			Iterator<JsonElement> iterator = jsonObject.get("subStartTime").getAsJsonArray().iterator();
+        	while (iterator.hasNext()) {
+        	    JsonElement element = iterator.next();
+        	    int value = element.getAsInt();
+        	    System.out.println(value);
+        	}
         } catch (Exception e) {
 
         }

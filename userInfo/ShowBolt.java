@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.storm.task.OutputCollector;
@@ -16,8 +17,8 @@ public class ShowBolt extends BaseRichBolt {
  
     @Override
     public void execute(Tuple tuple) {
-        String data = tuple.getStringByField("data");
-        System.out.println("ShowBolt: " + data);
+        ArrayList<Double> list = (ArrayList<Double>) tuple.getValueByField("data");
+        System.out.println("ShowBolt: " + list);
     }
  
     @Override
