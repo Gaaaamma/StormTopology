@@ -11,7 +11,7 @@ import org.apache.storm.topology.TopologyBuilder;
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("userInfo", new UserInfoSpout(), 1);
-        builder.setBolt("showBolt", new ShowBolt(), 1).shuffleGrouping("userInfo");
+        builder.setBolt("addBolt", new AddBolt(), 1).shuffleGrouping("userInfo");
 
         conf.setDebug(true);
         conf.setNumWorkers(2);
