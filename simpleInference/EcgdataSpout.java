@@ -5,15 +5,36 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.storm.spout.SpoutOutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseRichSpout;
+import org.apache.storm.tuple.Fields;
+import org.apache.storm.tuple.Values;
+import org.apache.storm.utils.Utils;
 import com.google.gson.Gson;
 
-// import org.json.JSONObject;
+ public class EcgdataSpout extends BaseRichSpout {
+    SpoutOutputCollector spoutOutputCollector;
+	String apiRequest = "http://140.113.170.152:32777/users/ecg/rawdata/";
+	int seconds = 2;
+	Gson gson;
 
-class Test {
-    public static void main(String[] args) {
+    @Override
+    public void open(Map<String, Object> conf, TopologyContext context, SpoutOutputCollector collector) {
+        // TODO Auto-generated method stub
+        this.spoutOutputCollector = collector;
+		this.gson = new Gson();
+    }
+
+    @Override
+    public void nextTuple() {
+        // TODO Auto-generated method stub
+        Utils.sleep(5000);
         try { 
-			int seconds = 10;
-            String target = "http://140.113.170.152:32777/users/ecg/rawdata/" + String.valueOf(seconds);
+            String target = apiRequest + String.valueOf(seconds);
 			Gson gson = new Gson();
 			EcgRawData rawData = gson.fromJson(httpRequest("GET", target, target), EcgRawData.class);
 
@@ -47,12 +68,16 @@ class Test {
 					// New Patient => Emit old patient if patient != ""
 					if (!patient.equals("")) {
 						// Emit old patients
-						System.out.println("A: ");
-						System.out.println(patient);
-						for (int j = 0; j < diff1.size(); j++) {
-							System.out.println(timestamps[j]);
-						}
-						System.out.println(diff1.size() + " : " + diff2.size() + " : " + diff3.size());
+						this.spoutOutputCollector.emit(new Values(patient, seconds, 
+						timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
+						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1)));
+
+						// System.out.println("A: ");
+						// System.out.println(patient);
+						// for (int j = 0; j < diff1.size(); j++) {
+						// 	System.out.println(timestamps[j]);
+						// }
+						// System.out.println(diff1.size() + " : " + diff2.size() + " : " + diff3.size());
 					}
 					// Initialize
 					timestampIndex = 0;
@@ -74,21 +99,32 @@ class Test {
 			// Emit last parent data
 			if (!patient.equals("")) {
 				// Emit old patients
-				System.out.println("B: ");
-				System.out.println(patient);
-				for (int j = 0; j < diff1.size(); j++) {
-					System.out.println(timestamps[j]);
-				}				
-				System.out.println(diff1.size() + " : " + diff2.size() + " : " + diff3.size());
-			}
+				this.spoutOutputCollector.emit(new Values(patient, seconds, 
+						timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
+						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1)));
 
-			// Values v = new Values(patientId, dataLength, t1, t1d1, t1d2, t1d3, t2, ...);
+				// System.out.println("B: ");
+				// System.out.println(patient);
+				// for (int j = 0; j < diff1.size(); j++) {
+				// 	System.out.println(timestamps[j]);
+				// }				
+				// System.out.println(diff1.size() + " : " + diff2.size() + " : " + diff3.size());
+			}
 
         } catch (Exception e) {
 			System.out.println("Spout exception: " + e);
         }
     }
-    public static String httpRequest(String method,String targetUrl,String requestBodyJson) throws Exception {
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        // TODO Auto-generated method stub
+        declarer.declare(new Fields("patientID", "seconds", 
+		"t1", "t1d1", "t1d2", "t1d3",
+		"t2", "t2d1", "t2d2", "t2d3"));
+    }
+
+    public String httpRequest(String method,String targetUrl,String requestBodyJson) throws Exception {
 		HttpURLConnection connection = null;
 		StringBuffer sb = new StringBuffer("");
 		
@@ -130,4 +166,5 @@ class Test {
 		}
 		return sb.toString();
 	}
-}
+ }
+ 

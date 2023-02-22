@@ -1,0 +1,32 @@
+syntax = "proto3";
+package inference;
+
+service MIInference{
+    rpc doInference(Input) returns(Msg);
+    rpc doMultiInference(MultiInput) returns(MultiMsg);
+}
+
+message VoidRequest{}
+message MultiInput{
+    repeated Input input= 1;
+}
+message Input{
+    string id = 1;
+    repeated EcgData data = 2;   
+}
+message EcgData{
+    int32 timestamp = 1;
+    repeated float diff_1 = 2;
+    repeated float diff_2 = 3;
+    repeated float diff_3 = 4;
+}
+message Msg{
+    bool status = 1;
+    bool result = 2;
+    string msg = 3;
+}
+message MultiMsg{
+    repeated bool status = 1;
+    repeated bool result =2;
+    string msg =3;
+}

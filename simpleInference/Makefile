@@ -1,8 +1,9 @@
-FINAL_JAR = userInfo.jar
+FINAL_JAR = simpleInference.jar
 SPOUT = EcgdataSpout.class
-BOLT = AddBolt.class
-TOPO = DataBaseTopology.class
+BOLT = InferenceBolt.class
+TOPO = SimpleInferenceTopology.class
 ECG_RAW_DATA = EcgRawData.class
+DATA_OBJ = DataObject.class
 STORM_DEP = storm-client-2.4.0.jar
 JSON_DEP = gson-2.2.2.jar
 PYTHON_DEP = resources
@@ -11,8 +12,11 @@ PYTHON_DEP = resources
 
 all: $(FINAL_JAR)
 
-$(FINAL_JAR): $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(TOPO)
-	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(TOPO) $(PYTHON_DEP)
+$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(TOPO)
+	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(TOPO) $(PYTHON_DEP)
+
+$(DATA_OBJ): DataObject.java
+	javac $<
 
 $(ECG_RAW_DATA): EcgRawData.java
 	javac $<
@@ -20,11 +24,11 @@ $(ECG_RAW_DATA): EcgRawData.java
 $(SPOUT): EcgdataSpout.java
 	javac -cp $(STORM_DEP):$(JSON_DEP):. $<
 
-$(BOLT): AddBolt.java
+$(BOLT): InferenceBolt.java
 	javac -cp $(STORM_DEP) $<
 
-$(TOPO): DataBaseTopology.java $(SPOUT) $(BOLT)
-	javac -cp $(STORM_DEP):. DataBaseTopology.java
+$(TOPO): SimpleInferenceTopology.java $(SPOUT) $(BOLT)
+	javac -cp $(STORM_DEP):. SimpleInferenceTopology.java
 
 test:
 	javac EcgRawData.java
