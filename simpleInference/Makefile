@@ -1,8 +1,8 @@
 FINAL_JAR = userInfo.jar
-SPOUT = UserInfoSpout.class
+SPOUT = EcgdataSpout.class
 BOLT = AddBolt.class
 TOPO = DataBaseTopology.class
-USER = User.class
+ECG_RAW_DATA = EcgRawData.class
 STORM_DEP = storm-client-2.4.0.jar
 JSON_DEP = gson-2.2.2.jar
 PYTHON_DEP = resources
@@ -11,13 +11,13 @@ PYTHON_DEP = resources
 
 all: $(FINAL_JAR)
 
-$(FINAL_JAR): $(USER) $(SPOUT) $(BOLT) $(TOPO)
-	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(USER) $(SPOUT) $(BOLT) $(TOPO) $(PYTHON_DEP)
+$(FINAL_JAR): $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(TOPO)
+	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(TOPO) $(PYTHON_DEP)
 
-$(USER): User.java
+$(ECG_RAW_DATA): EcgRawData.java
 	javac $<
 
-$(SPOUT): UserInfoSpout.java
+$(SPOUT): EcgdataSpout.java
 	javac -cp $(STORM_DEP):$(JSON_DEP):. $<
 
 $(BOLT): AddBolt.java
@@ -28,8 +28,8 @@ $(TOPO): DataBaseTopology.java $(SPOUT) $(BOLT)
 
 test:
 	javac EcgRawData.java
-	javac -cp gson-2.2.2.jar:. Test.java
-	java -cp gson-2.2.2.jar:. Test
+	javac -cp gson-2.2.2.jar:storm-client-2.4.0.jar:. Test.java
+	java -cp gson-2.2.2.jar:storm-client-2.4.0.jar:. Test
 
 clean:
 	rm *.class

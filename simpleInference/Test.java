@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import com.google.gson.Gson;
 
 // import org.json.JSONObject;
@@ -10,17 +12,77 @@ import com.google.gson.Gson;
 class Test {
     public static void main(String[] args) {
         try { 
-			int seconds = 2;
+			int seconds = 19;
             String target = "http://140.113.170.152:32777/users/ecg/rawdata/" + String.valueOf(seconds);
 			Gson gson = new Gson();
 			EcgRawData rawData = gson.fromJson(httpRequest("GET", target, target), EcgRawData.class);
+
+			String patient = "";
+			int timestampIndex = 0;
+			int[] timestamps = new int[seconds];
+			Arrays.fill(timestamps, 0);
+			List<List<Double>> diff1 = new ArrayList<>();
+			List<List<Double>> diff2 = new ArrayList<>();
+			List<List<Double>> diff3 = new ArrayList<>();
 			for (int i = 0; i < rawData.data.size(); i++) {
-				System.out.println(rawData.data.get(i).Patient_CodeID);
-				System.out.println(rawData.data.get(i).Ecg_time);
-				System.out.println(rawData.data.get(i).Diff_1.size());
-				System.out.println(rawData.data.get(i).Diff_2.size());
-				System.out.println(rawData.data.get(i).Diff_3.size());
+				if (rawData.data.get(i).Patient_CodeID.equals(patient)) {
+					// Same patient => append data
+					// Check timestamp to see which index we are going to insert
+					int timeDiff = rawData.data.get(i).Ecg_time - timestamps[timestampIndex - 1];
+					while (timeDiff > 1) {
+						timestamps[timestampIndex] = 0;
+						timestampIndex++;
+						timeDiff--;
+						diff1.add(new ArrayList<>());
+						diff2.add(new ArrayList<>());
+						diff3.add(new ArrayList<>());
+					}
+					timestamps[timestampIndex] = rawData.data.get(i).Ecg_time;
+					timestampIndex++;
+					diff1.add(rawData.data.get(i).Diff_1);
+					diff2.add(rawData.data.get(i).Diff_2);
+					diff3.add(rawData.data.get(i).Diff_3);
+
+				} else {
+					// New Patient => Emit old patient if patient != ""
+					if (!patient.equals("")) {
+						// Emit old patients
+						System.out.println("A: ");
+						System.out.println(patient);
+						for (int j = 0; j < diff1.size(); j++) {
+							System.out.println(timestamps[j]);
+						}
+						System.out.println(diff1.size() + " : " + diff2.size() + " : " + diff3.size());
+					}
+					// Initialize
+					timestampIndex = 0;
+					Arrays.fill(timestamps, 0);
+					diff1.clear();
+					diff2.clear();
+					diff3.clear();
+
+					// Pack New Patient 
+					patient = rawData.data.get(i).Patient_CodeID;
+					timestamps[timestampIndex] = rawData.data.get(i).Ecg_time;
+					timestampIndex++;
+					diff1.add(rawData.data.get(i).Diff_1);
+					diff2.add(rawData.data.get(i).Diff_2);
+					diff3.add(rawData.data.get(i).Diff_3);
+				}
 			}
+
+			// Emit last parent data
+			if (!patient.equals("")) {
+				// Emit old patients
+				System.out.println("B: ");
+				System.out.println(patient);
+				for (int j = 0; j < diff1.size(); j++) {
+					System.out.println(timestamps[j]);
+				}				
+				System.out.println(diff1.size() + " : " + diff2.size() + " : " + diff3.size());
+			}
+
+			// Values v = new Values(patientId, dataLength, t1, t1d1, t1d2, t1d3, t2, ...);
 
         } catch (Exception e) {
 			System.out.println("Spout exception: " + e);
