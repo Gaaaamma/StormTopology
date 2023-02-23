@@ -11,7 +11,8 @@ import org.apache.storm.topology.TopologyBuilder;
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("ecgdataSpout", new EcgdataSpout(), 1);
-        builder.setBolt("inferenceBolt", new InferenceBolt(), 1).shuffleGrouping("ecgdataSpout");
+        builder.setBolt("migrpcBolt", new MiGrpcBolt(), 1).shuffleGrouping("ecgdataSpout");
+        // builder.setBolt("inferenceBolt", new InferenceBolt(), 1).shuffleGrouping("ecgdataSpout");
 
         conf.setDebug(false);
         conf.setNumWorkers(2);
