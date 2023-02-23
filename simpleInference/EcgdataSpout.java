@@ -19,7 +19,7 @@ import com.google.gson.Gson;
  public class EcgdataSpout extends BaseRichSpout {
     SpoutOutputCollector spoutOutputCollector;
 	String apiRequest = "http://140.113.170.152:32777/users/ecg/rawdata/";
-	int seconds = 2;
+	int seconds = 10;
 	Gson gson;
 
     @Override
@@ -68,9 +68,35 @@ import com.google.gson.Gson;
 					// New Patient => Emit old patient if patient != ""
 					if (!patient.equals("")) {
 						// Emit old patients
+						// If diffI.size != seconds => Padding
+						int difference1 = seconds - diff1.size();
+						int difference2 = seconds - diff2.size();
+						int difference3 = seconds - diff3.size();
+						while (difference1 > 0) {
+							diff1.add(new ArrayList<>());
+							difference1--;
+						}
+						while (difference2 > 0) {
+							diff2.add(new ArrayList<>());
+							difference2--;
+						}
+						while (difference3 > 0) {
+							diff3.add(new ArrayList<>());
+							difference3--;
+						}
+
+						// Emit
 						this.spoutOutputCollector.emit(new Values(patient, seconds, 
 						timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
-						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1)));
+						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1),
+						timestamps[2], diff1.get(2), diff2.get(2), diff3.get(2),
+						timestamps[3], diff1.get(3), diff2.get(3), diff3.get(3),
+						timestamps[4], diff1.get(4), diff2.get(4), diff3.get(4),
+						timestamps[5], diff1.get(5), diff2.get(5), diff3.get(5),
+						timestamps[6], diff1.get(6), diff2.get(6), diff3.get(6),
+						timestamps[7], diff1.get(7), diff2.get(7), diff3.get(7),
+						timestamps[8], diff1.get(8), diff2.get(8), diff3.get(8),
+						timestamps[9], diff1.get(9), diff2.get(9), diff3.get(9)));
 
 						// System.out.println("A: ");
 						// System.out.println(patient);
@@ -99,9 +125,35 @@ import com.google.gson.Gson;
 			// Emit last parent data
 			if (!patient.equals("")) {
 				// Emit old patients
-				this.spoutOutputCollector.emit(new Values(patient, seconds, 
+						// If diffI.size != seconds => Padding
+						int difference1 = seconds - diff1.size();
+						int difference2 = seconds - diff2.size();
+						int difference3 = seconds - diff3.size();
+						while (difference1 > 0) {
+							diff1.add(new ArrayList<>());
+							difference1--;
+						}
+						while (difference2 > 0) {
+							diff2.add(new ArrayList<>());
+							difference2--;
+						}
+						while (difference3 > 0) {
+							diff3.add(new ArrayList<>());
+							difference3--;
+						}
+
+						// Emit
+						this.spoutOutputCollector.emit(new Values(patient, seconds, 
 						timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
-						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1)));
+						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1),
+						timestamps[2], diff1.get(2), diff2.get(2), diff3.get(2),
+						timestamps[3], diff1.get(3), diff2.get(3), diff3.get(3),
+						timestamps[4], diff1.get(4), diff2.get(4), diff3.get(4),
+						timestamps[5], diff1.get(5), diff2.get(5), diff3.get(5),
+						timestamps[6], diff1.get(6), diff2.get(6), diff3.get(6),
+						timestamps[7], diff1.get(7), diff2.get(7), diff3.get(7),
+						timestamps[8], diff1.get(8), diff2.get(8), diff3.get(8),
+						timestamps[9], diff1.get(9), diff2.get(9), diff3.get(9)));
 
 				// System.out.println("B: ");
 				// System.out.println(patient);
@@ -121,7 +173,15 @@ import com.google.gson.Gson;
         // TODO Auto-generated method stub
         declarer.declare(new Fields("patientID", "seconds", 
 		"t1", "t1d1", "t1d2", "t1d3",
-		"t2", "t2d1", "t2d2", "t2d3"));
+		"t2", "t2d1", "t2d2", "t2d3",
+		"t3", "t3d1", "t3d2", "t3d3",
+		"t4", "t4d1", "t4d2", "t4d3",
+		"t5", "t5d1", "t5d2", "t5d3",
+		"t6", "t6d1", "t6d2", "t6d3",
+		"t7", "t7d1", "t7d2", "t7d3",
+		"t8", "t8d1", "t8d2", "t8d3",
+		"t9", "t9d1", "t9d2", "t9d3",
+		"t10", "t10d1", "t10d2", "t10d3"));
     }
 
     public String httpRequest(String method,String targetUrl,String requestBodyJson) throws Exception {
