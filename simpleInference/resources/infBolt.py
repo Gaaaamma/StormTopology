@@ -1,7 +1,9 @@
 import storm
 import sys
+import random
 
 num = 0
+symptom = "MI"
 def testFun():
     print("HELLOWORLD: " + str(num), file=sys.stderr)
     
@@ -65,6 +67,9 @@ class InfBolt(storm.BasicBolt):
               + str(t7) + ", " + str(t8) + ", " + str(t9) + ", " + str(t10) + "]", file=sys.stderr)
         print("infBolt get type: ", type(t1d1), file=sys.stderr)
         print("infBolt get t1 len: (" + str(len(t1d1)) + "," + str(len(t1d2)) + "," + str(len(t1d3)) + ")", file=sys.stderr)
+        
+        # Emit to next Bolt
+        storm.emit([patientID, symptom, random.randint(0, 1)])
 
 num += 1000
 testFun()

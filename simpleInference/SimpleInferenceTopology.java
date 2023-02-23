@@ -13,9 +13,10 @@ import org.apache.storm.topology.TopologyBuilder;
         builder.setSpout("ecgdataSpout", new EcgdataSpout(), 1);
         builder.setBolt("migrpcBolt", new MiGrpcBolt(), 1).shuffleGrouping("ecgdataSpout");
         // builder.setBolt("inferenceBolt", new InferenceBolt(), 1).shuffleGrouping("ecgdataSpout");
+        builder.setBolt("storeBolt", new StoreBolt(), 1).shuffleGrouping("migrpcBolt");
 
         conf.setDebug(false);
-        conf.setNumWorkers(2);
+        conf.setNumWorkers(3);
 
         String topologyName = "SimpleInferenceTopology";
         return submit(topologyName, conf, builder);
