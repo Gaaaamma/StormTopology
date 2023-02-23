@@ -6,7 +6,7 @@ import org.apache.storm.tuple.Fields;
 
 public class MiGrpcBolt extends ShellBolt implements IRichBolt {
     public MiGrpcBolt() {
-        super("python", "infBolt.py");
+        super("python", "miInfBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

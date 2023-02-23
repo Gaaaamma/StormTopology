@@ -1,7 +1,7 @@
 FINAL_JAR = simpleInference.jar
 SPOUT = EcgdataSpout.class
 BOLT = InferenceBolt.class
-BOLT_GRPC = MiGrpcBolt.class
+BOLT_MI_GRPC = MiGrpcBolt.class
 BOLT_STORE = StoreBolt.class
 TOPO = SimpleInferenceTopology.class
 ECG_RAW_DATA = EcgRawData.class
@@ -14,8 +14,8 @@ PYTHON_DEP = resources
 
 all: $(FINAL_JAR)
 
-$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(BOLT_GRPC) $(BOLT_STORE) $(TOPO)
-	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(BOLT_GRPC) $(BOLT_STORE) $(TOPO) $(PYTHON_DEP)
+$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(BOLT_MI_GRPC) $(BOLT_STORE) $(TOPO)
+	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT) $(BOLT_MI_GRPC) $(BOLT_STORE) $(TOPO) $(PYTHON_DEP)
 
 $(DATA_OBJ): DataObject.java
 	javac $<
@@ -29,7 +29,7 @@ $(SPOUT): EcgdataSpout.java
 $(BOLT): InferenceBolt.java
 	javac -cp $(STORM_DEP) $<
 
-$(BOLT_GRPC): MiGrpcBolt.java
+$(BOLT_MI_GRPC): MiGrpcBolt.java
 	javac -cp $(STORM_DEP) $<
 
 $(BOLT_STORE): StoreBolt.java
