@@ -11,9 +11,10 @@ import org.apache.storm.topology.TopologyBuilder;
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("ecgdataSpout", new EcgdataSpout(), 1);
-        builder.setBolt("migrpcBolt", new MiGrpcBolt(), 1).shuffleGrouping("ecgdataSpout");
+        // builder.setBolt("migrpcBolt", new MiGrpcBolt(), 1).shuffleGrouping("ecgdataSpout");
+        builder.setBolt("miinfBolt", new MiInfBolt(), 1).shuffleGrouping("ecgdataSpout");
         // builder.setBolt("inferenceBolt", new InferenceBolt(), 1).shuffleGrouping("ecgdataSpout");
-        builder.setBolt("storeBolt", new StoreBolt(), 1).shuffleGrouping("migrpcBolt");
+        builder.setBolt("storeBolt", new StoreBolt(), 1).shuffleGrouping("miinfBolt");
 
         conf.setDebug(false);
         conf.setNumWorkers(3);
