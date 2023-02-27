@@ -4,7 +4,7 @@ import grpc
 import MIInference_pb2
 import MIInference_pb2_grpc
 
-INF_ADDRESS = "140.113.213.49:47777"
+INF_ADDRESS = "localhost:47777"
 SYMPTOM = "MI"
 def miInference(patient, ecgData):
     with grpc.insecure_channel(INF_ADDRESS) as channel:
