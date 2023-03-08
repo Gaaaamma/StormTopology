@@ -1,5 +1,6 @@
 FINAL_JAR = vipasyanaService.jar
 SPOUT = EcgdataSpout.class
+BOLT_MI_PREP = MiPrepBolt.class
 BOLT_MI_INF = MiInfBolt.class
 BOLT_STORE = StoreBolt.class
 TOPO = VipasyanaServiceTopology.class
@@ -13,8 +14,8 @@ PYTHON_DEP = resources
 
 all: $(FINAL_JAR)
 
-$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_MI_INF) $(BOLT_STORE) $(TOPO)
-	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_MI_INF) $(BOLT_STORE) $(TOPO) $(PYTHON_DEP)
+$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_MI_PREP) $(BOLT_MI_INF) $(BOLT_STORE) $(TOPO)
+	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_MI_PREP) $(BOLT_MI_INF) $(BOLT_STORE) $(TOPO) $(PYTHON_DEP)
 
 $(DATA_OBJ): DataObject.java
 	javac $<
@@ -24,6 +25,9 @@ $(ECG_RAW_DATA): EcgRawData.java
 
 $(SPOUT): EcgdataSpout.java
 	javac -cp $(STORM_DEP):$(JSON_DEP):. $<
+
+$(BOLT_MI_PREP): MiPrepBolt.java
+	javac -cp $(STORM_DEP) $<
 
 $(BOLT_MI_INF): MiInfBolt.java
 	javac -cp $(STORM_DEP) $<
