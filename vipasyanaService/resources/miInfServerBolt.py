@@ -9,6 +9,7 @@ import Functions as F
 import sys
 import pickle
 import base64
+import requests
 
 #******************************************#
 #             global definition            #
@@ -18,6 +19,11 @@ SEG_LEN = 10                    # 資料長度(秒)
 SAMPLE_RATE = 256               # 資料取樣率(點/秒)
 TOLERANCE =5                    # check_length tolerance
 MAX_MESSAGE_LENGTH = 256*1024*1024 # (Byte) equals to 256 MB
+
+STORM_TIMESTAMP_START_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_START"
+STORM_TIMESTAMP_DONE_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_DONE."
+PATIENT_START = "NCTU0000_0"
+PATIENT_END = "NCTU0002_32"
 
 # Load model
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -78,10 +84,14 @@ def doInference(patientID, x_strip_bytes, x_stft_bytes):
 class MiInfServerBolt(storm.BasicBolt):
     def process(self, tup):
         patientID = tup.values[0]
+        if (patientID == PATIENT_START):
+            response = requests.get(STORM_TIMESTAMP_START_API)
         x_strip_bytes = base64.b64decode(tup.values[1].encode('utf-8'))
         x_stft_bytes = base64.b64decode(tup.values[2].encode('utf-8'))
         
         result = doInference(patientID, x_strip_bytes, x_stft_bytes)
+        if (patientID == PATIENT_END):
+            response = requests.get(STORM_TIMESTAMP_DONE_API)
         storm.emit([patientID, SYMPTOM, result])
         
 MiInfServerBolt().run()
