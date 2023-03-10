@@ -1,5 +1,5 @@
 from decimal import Decimal
-FILE_NAME = "FInf_500_4_1.txt"
+FILE_NAME = "PrepInf_100_1_1.txt"
 
 # Open file
 fp = open(FILE_NAME, "r")

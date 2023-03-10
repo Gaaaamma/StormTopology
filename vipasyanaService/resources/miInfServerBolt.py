@@ -22,8 +22,16 @@ MAX_MESSAGE_LENGTH = 256*1024*1024 # (Byte) equals to 256 MB
 
 STORM_TIMESTAMP_START_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_START"
 STORM_TIMESTAMP_DONE_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_DONE."
-PATIENT_START = "NCTU0000_0"
-PATIENT_END = "NCTU0002_32"
+PATIENT_NUM = 99
+count = 0
+
+def countAndRequest(num):
+    global count
+    count = (count + num) % PATIENT_NUM
+    if (num == 1 and count == 1):
+        response = requests.get(STORM_TIMESTAMP_START_API)
+    elif (num == 0 and count == 0):
+        response = requests.get(STORM_TIMESTAMP_DONE_API)
 
 # Load model
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -83,15 +91,13 @@ def doInference(patientID, x_strip_bytes, x_stft_bytes):
             
 class MiInfServerBolt(storm.BasicBolt):
     def process(self, tup):
+        countAndRequest(1)
         patientID = tup.values[0]
-        if (patientID == PATIENT_START):
-            response = requests.get(STORM_TIMESTAMP_START_API)
         x_strip_bytes = base64.b64decode(tup.values[1].encode('utf-8'))
         x_stft_bytes = base64.b64decode(tup.values[2].encode('utf-8'))
         
         result = doInference(patientID, x_strip_bytes, x_stft_bytes)
-        if (patientID == PATIENT_END):
-            response = requests.get(STORM_TIMESTAMP_DONE_API)
+        countAndRequest(0)
         storm.emit([patientID, SYMPTOM, result])
         
 MiInfServerBolt().run()
