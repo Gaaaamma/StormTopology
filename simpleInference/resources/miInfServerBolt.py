@@ -238,8 +238,8 @@ def doInference(request):
 class MiInfServerBolt(storm.BasicBolt):
     def process(self, tup):
         patientID = tup.values[0]
-        if (patientID == PATIENT_START):
-            response = requests.get(STORM_TIMESTAMP_START_API)
+        #if (patientID == PATIENT_START):
+        #    response = requests.get(STORM_TIMESTAMP_START_API)
         seconds = tup.values[1]
         t1 = tup.values[2]
         t1d1 = tup.values[3]
@@ -303,8 +303,8 @@ class MiInfServerBolt(storm.BasicBolt):
         
         input = Input(patientID, [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10])
         result = doInference(input)
-        if (patientID == PATIENT_END):
-            response = requests.get(STORM_TIMESTAMP_DONE_API)
+        #if (patientID == PATIENT_END):
+        #    response = requests.get(STORM_TIMESTAMP_DONE_API)
         storm.emit([patientID, SYMPTOM, result])
         
 MiInfServerBolt().run()
