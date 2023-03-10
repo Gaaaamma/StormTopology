@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 	int period = 10000;
 	String apiRequest = "http://140.113.170.152:32777/users/ecg/rawdata/";
 	int seconds = 10;
-	int multiple = 100;
+	int multiple = 33;
 	Gson gson;
 
     @Override
