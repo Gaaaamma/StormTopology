@@ -20,7 +20,7 @@ MAX_MESSAGE_LENGTH = 256*1024*1024 # (Byte) equals to 256 MB
 
 STORM_TIMESTAMP_START_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_START"
 STORM_TIMESTAMP_DONE_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_DONE."
-PATIENT_NUM = 300
+PATIENT_NUM = 498
 count = 0
 
 def countAndRequest(num):
