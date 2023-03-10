@@ -5,7 +5,7 @@ import requests
 STORM_TIMESTAMP_START_API = "http://140.113.170.152:32777/storm/timestamp/MI_STO_START"
 STORM_TIMESTAMP_DONE_API = "http://140.113.170.152:32777/storm/timestamp/MI_STO_DONE."
 PATIENT_START = "NCTU0000_0"
-PATIENT_END = "NCTU0002_32"
+PATIENT_END = "NCTU0002_99"
 
 class StoreBolt(storm.BasicBolt):
     def process(self, tup):
