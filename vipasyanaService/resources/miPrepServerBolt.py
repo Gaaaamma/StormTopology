@@ -106,15 +106,14 @@ def doInference(request):
             '  Diff_2 length: ' + diff2RawLength + '\n' +
             '  Diff_3 length: ' + diff3RawLength + '\n' +
             '  Time cost: ' + '{:.2f}'.format((time.time()-timeCheckPoint['startTime'])*1000) + ' ms\n', file=sys.stderr)
-        return [0, 0, 0]
     
     else:
         # Preprocessing
         x = np.stack([diff_1,diff_2,diff_3], axis=-1).reshape(-1,2560,3) # 預設為一次一個人做檢測
         x_strip = F.make_2d_temp(x, verbose=0)
         x_stft = F.stft(x, fs=256, step=25)[:,:,1:92,:]
-        x_strip_bytes = base64.b64encode(pickle.dumps(x_strip)).decode('utf-8')
-        x_stft_bytes = base64.b64encode(pickle.dumps(x_stft)).decode('utf-8')
+        #x_strip_bytes = base64.b64encode(pickle.dumps(x_strip)).decode('utf-8')
+        #x_stft_bytes = base64.b64encode(pickle.dumps(x_stft)).decode('utf-8')
         timeCheckPoint['preprocessTime'] = time.time()
 
         # Calculate time cost
@@ -135,7 +134,6 @@ def doInference(request):
                       f'  Pack cost: {packCostTime} ms\n' +
                       f'  PreP cost: {preprocessCostTime} ms\n' +
                       f'  Time cost: {allCostTime} ms\n', file=sys.stderr)
-        return [1, x_strip_bytes, x_stft_bytes]
         
 class MiInfServerBolt(storm.BasicBolt):
     def process(self, tup):
@@ -203,11 +201,22 @@ class MiInfServerBolt(storm.BasicBolt):
         data10 = EcgData(t10, t10d1, t10d2, t10d3)
         
         input = Input(patientID, [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10])
-        result = doInference(input)
+        doInference(input)
         
-        countAndRequest(0)    
-        if (result[0] != 0):
-            storm.emit([patientID, result[1], result[2]])
+        countAndRequest(0)
+        
+        # Need to serialize
+        storm.emit([patientID, seconds,
+                    t1, base64.b64encode(pickle.dumps(t1d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t1d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t1d3)).decode('utf-8'),
+                    t2, base64.b64encode(pickle.dumps(t2d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t2d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t2d3)).decode('utf-8'),
+                    t3, base64.b64encode(pickle.dumps(t3d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t3d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t3d3)).decode('utf-8'),
+                    t4, base64.b64encode(pickle.dumps(t4d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t4d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t4d3)).decode('utf-8'),
+                    t5, base64.b64encode(pickle.dumps(t5d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t5d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t5d3)).decode('utf-8'),
+                    t6, base64.b64encode(pickle.dumps(t6d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t6d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t6d3)).decode('utf-8'),
+                    t7, base64.b64encode(pickle.dumps(t7d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t7d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t7d3)).decode('utf-8'),
+                    t8, base64.b64encode(pickle.dumps(t8d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t8d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t8d3)).decode('utf-8'),
+                    t9, base64.b64encode(pickle.dumps(t9d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t9d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t9d3)).decode('utf-8'),
+                    t10, base64.b64encode(pickle.dumps(t10d1)).decode('utf-8'), base64.b64encode(pickle.dumps(t10d2)).decode('utf-8'), base64.b64encode(pickle.dumps(t10d3)).decode('utf-8')])
         
 MiInfServerBolt().run()
 
