@@ -1,5 +1,5 @@
 from decimal import Decimal
-FILE_NAME = "PrepInf_100_1_1.txt"
+FILE_NAME = "stormTimestamp.txt"
 
 # Open file
 fp = open(FILE_NAME, "r")

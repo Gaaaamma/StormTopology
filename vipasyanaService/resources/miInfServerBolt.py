@@ -7,9 +7,6 @@ from keras.models import load_model
 from keras.optimizers import Adam
 import Functions as F
 import sys
-import pickle
-import base64
-import requests
 
 #******************************************#
 #             global definition            #
@@ -19,19 +16,6 @@ SEG_LEN = 10                    # 資料長度(秒)
 SAMPLE_RATE = 256               # 資料取樣率(點/秒)
 TOLERANCE =5                    # check_length tolerance
 MAX_MESSAGE_LENGTH = 256*1024*1024 # (Byte) equals to 256 MB
-
-STORM_TIMESTAMP_START_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_START"
-STORM_TIMESTAMP_DONE_API = "http://140.113.170.152:32777/storm/timestamp/MI_INF_DONE."
-PATIENT_NUM = 99
-count = 0
-
-def countAndRequest(num):
-    global count
-    count = (count + num) % PATIENT_NUM
-    if (num == 1 and count == 1):
-        response = requests.get(STORM_TIMESTAMP_START_API)
-    elif (num == 0 and count == 0):
-        response = requests.get(STORM_TIMESTAMP_DONE_API)
 
 # Load model
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -154,63 +138,63 @@ class MiInfServerBolt(storm.BasicBolt):
         patientID = tup.values[0]
         seconds = tup.values[1]
         t1 = tup.values[2]
-        t1d1 = pickle.loads(base64.b64decode(tup.values[3].encode('utf-8')))
-        t1d2 = pickle.loads(base64.b64decode(tup.values[4].encode('utf-8')))
-        t1d3 = pickle.loads(base64.b64decode(tup.values[5].encode('utf-8')))
+        t1d1 = tup.values[3]
+        t1d2 = tup.values[4]
+        t1d3 = tup.values[5]
         data1 = EcgData(t1, t1d1, t1d2, t1d3)
         
         t2 = tup.values[6]
-        t2d1 = pickle.loads(base64.b64decode(tup.values[7].encode('utf-8')))
-        t2d2 = pickle.loads(base64.b64decode(tup.values[8].encode('utf-8')))
-        t2d3 = pickle.loads(base64.b64decode(tup.values[9].encode('utf-8')))
+        t2d1 = tup.values[7]
+        t2d2 = tup.values[8]
+        t2d3 = tup.values[9]
         data2 = EcgData(t2, t2d1, t2d2, t2d3)
         
         t3 = tup.values[10]
-        t3d1 = pickle.loads(base64.b64decode(tup.values[11].encode('utf-8')))
-        t3d2 = pickle.loads(base64.b64decode(tup.values[12].encode('utf-8')))
-        t3d3 = pickle.loads(base64.b64decode(tup.values[13].encode('utf-8')))
+        t3d1 = tup.values[11]
+        t3d2 = tup.values[12]
+        t3d3 = tup.values[13]
         data3 = EcgData(t3, t3d1, t3d2, t3d3)
         
         t4 = tup.values[14]
-        t4d1 = pickle.loads(base64.b64decode(tup.values[15].encode('utf-8')))
-        t4d2 = pickle.loads(base64.b64decode(tup.values[16].encode('utf-8')))
-        t4d3 = pickle.loads(base64.b64decode(tup.values[17].encode('utf-8')))
+        t4d1 = tup.values[15]
+        t4d2 = tup.values[16]
+        t4d3 = tup.values[17]
         data4 = EcgData(t4, t4d1, t4d2, t4d3)
         
         t5 = tup.values[18]
-        t5d1 = pickle.loads(base64.b64decode(tup.values[19].encode('utf-8')))
-        t5d2 = pickle.loads(base64.b64decode(tup.values[20].encode('utf-8')))
-        t5d3 = pickle.loads(base64.b64decode(tup.values[21].encode('utf-8')))
+        t5d1 = tup.values[19]
+        t5d2 = tup.values[20]
+        t5d3 = tup.values[21]
         data5 = EcgData(t5, t5d1, t5d2, t5d3)
         
         t6 = tup.values[22]
-        t6d1 = pickle.loads(base64.b64decode(tup.values[23].encode('utf-8')))
-        t6d2 = pickle.loads(base64.b64decode(tup.values[24].encode('utf-8')))
-        t6d3 = pickle.loads(base64.b64decode(tup.values[25].encode('utf-8')))
+        t6d1 = tup.values[23]
+        t6d2 = tup.values[24]
+        t6d3 = tup.values[25]
         data6 = EcgData(t6, t6d1, t6d2, t6d3)
         
         t7 = tup.values[26]
-        t7d1 = pickle.loads(base64.b64decode(tup.values[27].encode('utf-8')))
-        t7d2 = pickle.loads(base64.b64decode(tup.values[28].encode('utf-8')))
-        t7d3 = pickle.loads(base64.b64decode(tup.values[29].encode('utf-8')))
+        t7d1 = tup.values[27]
+        t7d2 = tup.values[28]
+        t7d3 = tup.values[29]
         data7 = EcgData(t7, t7d1, t7d2, t7d3)
         
         t8 = tup.values[30]
-        t8d1 = pickle.loads(base64.b64decode(tup.values[31].encode('utf-8')))
-        t8d2 = pickle.loads(base64.b64decode(tup.values[32].encode('utf-8')))
-        t8d3 = pickle.loads(base64.b64decode(tup.values[33].encode('utf-8')))
+        t8d1 = tup.values[31]
+        t8d2 = tup.values[32]
+        t8d3 = tup.values[33]
         data8 = EcgData(t8, t8d1, t8d2, t8d3)
         
         t9 = tup.values[34]
-        t9d1 = pickle.loads(base64.b64decode(tup.values[35].encode('utf-8')))
-        t9d2 = pickle.loads(base64.b64decode(tup.values[36].encode('utf-8')))
-        t9d3 = pickle.loads(base64.b64decode(tup.values[37].encode('utf-8')))
+        t9d1 = tup.values[35]
+        t9d2 = tup.values[36]
+        t9d3 = tup.values[37]
         data9 = EcgData(t9, t9d1, t9d2, t9d3)
         
         t10 = tup.values[38]
-        t10d1 = pickle.loads(base64.b64decode(tup.values[39].encode('utf-8')))
-        t10d2 = pickle.loads(base64.b64decode(tup.values[40].encode('utf-8')))
-        t10d3 = pickle.loads(base64.b64decode(tup.values[41].encode('utf-8')))
+        t10d1 = tup.values[39]
+        t10d2 = tup.values[40]
+        t10d3 = tup.values[41]
         data10 = EcgData(t10, t10d1, t10d2, t10d3)
         
         input = Input(patientID, [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10])

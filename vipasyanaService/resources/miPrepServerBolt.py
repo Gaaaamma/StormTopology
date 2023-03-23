@@ -20,8 +20,8 @@ SAMPLE_RATE = 256               # 資料取樣率(點/秒)
 TOLERANCE =5                    # check_length tolerance
 MAX_MESSAGE_LENGTH = 256*1024*1024 # (Byte) equals to 256 MB
 
-STORM_TIMESTAMP_START_API = "http://140.113.170.152:32777/storm/timestamp/MI_PRE_START"
-STORM_TIMESTAMP_DONE_API = "http://140.113.170.152:32777/storm/timestamp/MI_PRE_DONE."
+STORM_TIMESTAMP_START_API = "http://192.168.2.132:32777/storm/timestamp/MI_PRE_START"
+STORM_TIMESTAMP_DONE_API = "http://192.168.2.132:32777/storm/timestamp/MI_PRE_DONE."
 PATIENT_NUM = 99
 count = 0
 
