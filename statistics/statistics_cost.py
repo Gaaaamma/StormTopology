@@ -1,5 +1,6 @@
 from decimal import Decimal
 FILE_NAME = "stormTimestamp.txt"
+REQUEST_PATIENT_NUM = 150
 
 # Open file
 fp = open(FILE_NAME, "r")
@@ -63,4 +64,11 @@ print("MaxLatency: " + str(maxLatency) + "ms\n")
 for k in infDic:
     print(f'pid {k}: {round(infDic[k] / (infAvgCount / len(infDic)), 2)}ms')
 
+print("\nThroughput: ")
+print("Request one time: " + str(REQUEST_PATIENT_NUM))
+allPatient = REQUEST_PATIENT_NUM * len(diff)
+print("Patient served: " + str(allPatient))
+period = getStoreDone[len(getStoreDone) - 1] - getEcgTime[0]
+print(f"Time cost: {period}ms ({round(period / 1000, 2)}sec)")
+print(f"Throughput: {round(allPatient / round(period/1000, 2) * 10 ,2)} (people/10sec)")
 fp.close()
