@@ -7,6 +7,15 @@ from keras.models import load_model
 from keras.optimizers import Adam
 import Functions as F
 import sys
+#******************************************#
+#                 statistic                #
+#******************************************#
+import os
+import requests
+URL = "http://192.168.2.132:32777/storm/timestamp/InfAVG_" + str(os.getpid()) + "_"
+PATIENT_NUM = 100
+sumTime = 0
+counter = 0
 
 #******************************************#
 #             global definition            #
@@ -135,6 +144,9 @@ def doInference(request):
             
 class MiInfServerBolt(storm.BasicBolt):
     def process(self, tup):
+        global counter
+        global sumTime
+        startTime = time.time()
         patientID = tup.values[0]
         seconds = tup.values[1]
         t1 = tup.values[2]
@@ -199,6 +211,10 @@ class MiInfServerBolt(storm.BasicBolt):
         
         input = Input(patientID, [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10])
         result = doInference(input)
+        sumTime += (time.time() - startTime) * 1000
+        counter += 1
+        if counter % PATIENT_NUM == 0:
+            requests.get(URL + str(round(sumTime / counter, 2)))
         storm.emit([patientID, SYMPTOM, result])
         
 MiInfServerBolt().run()
