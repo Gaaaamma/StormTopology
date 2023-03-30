@@ -6,26 +6,41 @@ fp = open(FILE_NAME, "r")
 line = fp.readline()
  
 index = 1
-getEcgTime = 0
-getStoreDone = 0
+getEcgTime = []
+getStoreDone = []
 diff = []
+
+infDic = {}
+infAvgCount = 0
 
 # Parsing data
 while line:
     split = line.split(": ")
     if (split[0] == "GET_ECG_DATA"):
-        getEcgTime = int(split[1])
+        getEcgTime.append(int(split[1]))
     
     if (split[0] == "MI_STO_DONE."):
-        getStoreDone = int(split[1])
-        print(index, end = ": ")
-        print(getEcgTime, end = ", ")
-        print(getStoreDone, end = " => ")
-        print(getStoreDone - getEcgTime, end = "ms\n")
-        diff.append(getStoreDone - getEcgTime)
-        index += 1
+        getStoreDone.append(int(split[1]))
+
+    if (split[0][0:6] == "InfAVG"):
+        infAvgCount += 1
+        info = split[0].split("_")
+        if (info[1] in infDic) :
+            infDic[info[1]] += float(info[2])
+        else:
+            infDic[info[1]] = 0.0
+            infDic[info[1]] += float(info[2])
 
     line = fp.readline()
+
+# Calculate each diff
+for i in range(0, len(getEcgTime)):
+    print(index, end = ": ")
+    print(getEcgTime[i], end = ", ")
+    print(getStoreDone[i], end = " => ")
+    print(getStoreDone[i] - getEcgTime[i], end = "ms\n")
+    diff.append(getStoreDone[i] - getEcgTime[i])
+    index += 1
 
 # Generate report
 maxLatency = 0
@@ -44,5 +59,8 @@ print("Round: " + str(len(diff)))
 print("AvgLatency: " + str(avg) + "ms")
 print("MinLatency: " + str(minLatency) + "ms")
 print("MaxLatency: " + str(maxLatency) + "ms\n")
+
+for k in infDic:
+    print(f'pid {k}: {round(infDic[k] / (infAvgCount / len(infDic)), 2)}ms')
 
 fp.close()
