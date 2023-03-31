@@ -12,7 +12,7 @@ getStoreDone = []
 diff = []
 
 infDic = {}
-infAvgCount = 0
+countDic = {}
 
 # Parsing data
 while line:
@@ -24,13 +24,14 @@ while line:
         getStoreDone.append(int(split[1]))
 
     if (split[0][0:6] == "InfAVG"):
-        infAvgCount += 1
         info = split[0].split("_")
-        if (info[1] in infDic) :
+        if (info[1] in infDic):
             infDic[info[1]] += float(info[2])
+            countDic[info[1]] += 1
         else:
             infDic[info[1]] = 0.0
             infDic[info[1]] += float(info[2])
+            countDic[info[1]] = 1
 
     line = fp.readline()
 
@@ -62,7 +63,7 @@ print("MinLatency: " + str(minLatency) + "ms")
 print("MaxLatency: " + str(maxLatency) + "ms\n")
 
 for k in infDic:
-    print(f'pid {k}: {round(infDic[k] / (infAvgCount / len(infDic)), 2)}ms')
+    print(f'pid {k}: {round(infDic[k] / countDic[k], 2)}ms')
 
 print("\nThroughput: ")
 print("Request one time: " + str(REQUEST_PATIENT_NUM))
