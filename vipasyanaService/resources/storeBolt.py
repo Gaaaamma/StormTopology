@@ -4,7 +4,7 @@ import requests
 
 STORM_TIMESTAMP_START_API = "http://192.168.2.132:32777/storm/timestamp/MI_STO_START"
 STORM_TIMESTAMP_DONE_API = "http://192.168.2.132:32777/storm/timestamp/MI_STO_DONE."
-PATIENT_NUM = 300
+PATIENT_NUM = 150
 count = 0
 
 def countAndRequest(num):
