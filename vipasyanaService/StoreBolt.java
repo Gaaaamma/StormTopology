@@ -5,7 +5,11 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 
 public class StoreBolt extends ShellBolt implements IRichBolt {
     public StoreBolt() {
-        super("python", "storeBolt.py");
+        /*  Content of /usr/pystart.sh
+         *  ~/.pyenv/shims/python $1 (Use python under $HOME/.pyenv to execute $1)
+         *  Or /usr/bin/python $1    (Use python default version to execut $1)
+         */
+        super("/usr/pystart.sh", "storeBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

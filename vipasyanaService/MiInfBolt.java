@@ -6,7 +6,11 @@ import org.apache.storm.tuple.Fields;
 
 public class MiInfBolt extends ShellBolt implements IRichBolt {
     public MiInfBolt() {
-        super("python", "miInfServerBolt.py");
+        /*  Content of /usr/pystart.sh
+         *  ~/.pyenv/shims/python $1 (Use python under $HOME/.pyenv to execute $1)
+         *  Or /usr/bin/python $1    (Use python default version to execut $1)
+         */
+        super("/usr/pystart.sh", "miInfServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

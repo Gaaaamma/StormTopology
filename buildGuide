@@ -62,3 +62,31 @@ ui.port: 6750
 
 # Set worker heap size
 worker.childopts: "-Xmx2g"
+
+#============================ ShellBolt python version =============================#
+# Note that in ShellBolt, this might execute /usr/bin/python (Guess)
+# So it won't be affected by pyenv to switch versions between python
+super("python", "myExector.py")  
+
+# Experiment: 
+#  1. Try to switch python version to 3.9.16 with no any python librarys installed,
+#     but all process works well (No module name doesn't happen)
+
+# Thus modify the super to the command below
+# and now we can use pyenv global {version}
+# and will actually make the system's python version changed
+# (Now No module name occurs)
+super("/home/ytc/.pyenv/shims/python", "myExecutor.py")
+
+# Notice that all the command below can't be used
+super("$HOME/.pyenv/shims/python", "myExecutor.py")
+super("~/.pyenv/shims/python", "myExecutor.py")
+
+# So, we write a shell script which will execute ~/.pyenv/shims/python 
+# then, we can execute different python by modifing the content of this shell script
+# The content in the file is now
+~/.pyenv/shims/python $1 
+
+# Finally, put it at /usr/pystart.sh (Remember to chmod +x this file)
+# Now in ShellBolt, the actually command is
+super("/usr/pystart.sh", "myExector.py")  
