@@ -12,7 +12,7 @@ import sys
 #******************************************#
 import os
 import requests
-URL = "http://192.168.2.132:32777/storm/timestamp/InfAVG_" + str(os.getpid()) + "_"
+URL = "http://192.168.2.132:32777/storm/timestamp/MI_InfAVG_" + str(os.getpid()) + "_"
 PATIENT_NUM = 100
 sumTime = 0
 counter = 0

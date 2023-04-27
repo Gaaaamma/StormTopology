@@ -18,10 +18,10 @@ import com.google.gson.Gson;
 
  public class EcgdataSpout extends BaseRichSpout {
     SpoutOutputCollector spoutOutputCollector;
-	int period = 700;
+	int period = 10000;
 	String apiRequest = "http://192.168.2.132:32777/users/ecg/rawdata/";
 	int seconds = 10;
-	int counts = 150;
+	int counts = 60;
 	int multiple = 1;
 	Gson gson;
 
