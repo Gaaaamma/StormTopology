@@ -12,7 +12,7 @@ import sys
 #******************************************#
 import os
 import requests
-URL = "http://192.168.2.132:32777/storm/timestamp/MI_InfAVG_" + str(os.getpid()) + "_"
+INFAVG_URL = "http://192.168.2.132:32777/storm/timestamp/MI_InfAVG_" + str(os.getpid()) + "_"
 PATIENT_NUM = 100
 sumTime = 0
 counter = 0
@@ -214,7 +214,9 @@ class MiInfServerBolt(storm.BasicBolt):
         sumTime += (time.time() - startTime) * 1000
         counter += 1
         if counter % PATIENT_NUM == 0:
-            requests.get(URL + str(round(sumTime / counter, 2)))
+            requests.get(INFAVG_URL + str(round(sumTime / counter, 2)))
+            sumTime = 0
+            counter = 0
         storm.emit([patientID, SYMPTOM, result])
         
 MiInfServerBolt().run()

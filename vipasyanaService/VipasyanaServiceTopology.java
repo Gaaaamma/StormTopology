@@ -13,14 +13,14 @@ import org.apache.storm.topology.TopologyBuilder;
 
         builder.setSpout("ecgdataSpout", new EcgdataSpout(), 1);
         // builder.setBolt("miinfBolt", new MiInfBolt(), 4).fieldsGrouping("ecgdataSpout", new Fields("patientID"));
-        // builder.setBolt("miinfBolt", new MiInfBolt(), 1).shuffleGrouping("ecgdataSpout");
+        builder.setBolt("miinfBolt", new MiInfBolt(), 1).shuffleGrouping("ecgdataSpout");
         
         // builder.setBolt("hfinfBolt", new HfInfBolt(), 4).fieldsGrouping("ecgdataSpout", new Fields("patientID"));
         builder.setBolt("hfinfBolt", new HfInfBolt(), 1).shuffleGrouping("ecgdataSpout");
-        builder.setBolt("storeBolt", new StoreBolt(), 1).shuffleGrouping("hfinfBolt");
+        builder.setBolt("storeBolt", new StoreBolt(), 1).shuffleGrouping("miinfBolt").shuffleGrouping("hfinfBolt");
 
         conf.setDebug(false);
-        conf.setNumWorkers(3);
+        conf.setNumWorkers(4);
 
         String topologyName = "VipasyanaServiceTopology";
         return submit(topologyName, conf, builder);

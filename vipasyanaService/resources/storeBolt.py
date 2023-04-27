@@ -16,10 +16,7 @@ counter = {
 def countAndRequest(num, symptom):
     global counter
     counter[symptom] = (counter[symptom] + num) % PATIENT_NUM
-    if (num == 1 and counter[symptom] == 1):
-        # START
-        response = requests.get(TIMESTAMP_BASE + symptom + START_TAIL)
-    elif (num == 0 and counter[symptom] == 0):
+    if (num == 0 and counter[symptom] == 0):
         # DONE
         response = requests.get(TIMESTAMP_BASE + symptom + DONE_TAIL)
 
