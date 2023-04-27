@@ -60,11 +60,16 @@ while line:
 # Calculate each diff (Based on SYMPTOM_STO_DONE.)
 for symptom in getStoreDone:
     index = 1
+    preGetTime = 0
+    preDoneTime = 0
     for i in range(0, len(getStoreDone[symptom])):
         print(f'{symptom} - {index}', end= ': ')
         print(getEcgTime[i], end = ', ')
         print(getStoreDone[symptom][i], end = " => ")
-        print(getStoreDone[symptom][i] - getEcgTime[i], end = "ms\n")
+        print(getStoreDone[symptom][i] - getEcgTime[i], end = "ms")
+        print(f'   ({getEcgTime[i] - preGetTime}ms, {getStoreDone[symptom][i] - preDoneTime}ms)')
+        preGetTime = getEcgTime[i]
+        preDoneTime = getStoreDone[symptom][i]
         diff[symptom].append(getStoreDone[symptom][i] - getEcgTime[i])
         index += 1
     print('')
@@ -100,7 +105,7 @@ for symptom in getStoreDone:
     print(f"Time cost: {period}ms ({round(period / 1000, 2)}sec)")
     print(f"Throughput: {round(allPatient / round(period / 1000, 2) * 10, 2)} (people/10sec)")
     for p in infDic[symptom]:
-        print(f'pid {p}: {round(infDic[symptom][p] / countDic[symptom][p], 2)}ms')
+        print(f' - pid {p}: {round(infDic[symptom][p] / countDic[symptom][p], 2)}ms')
     print('')
 
 fp.close()
