@@ -1,6 +1,6 @@
 from decimal import Decimal
 FILE_NAME = "stormTimestamp.txt"
-REQUEST_PATIENT_NUM = 60
+REQUEST_PATIENT_NUM = 70
 
 # Open file
 fp = open(FILE_NAME, "r")

@@ -12,7 +12,7 @@ import storm
 #                 statistic                #
 #******************************************#
 INFAVG_URL = "http://192.168.2.132:32777/storm/timestamp/HF_InfAVG_" + str(os.getpid()) + "_"
-PATIENT_NUM = 60
+PATIENT_NUM = 100
 sumTime = 0
 counter = 0
 
