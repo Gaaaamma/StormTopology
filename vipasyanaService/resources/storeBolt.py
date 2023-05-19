@@ -5,7 +5,7 @@ import requests
 TIMESTAMP_BASE = "http://192.168.2.132:32777/storm/timestamp/"
 START_TAIL = "_STO_START"
 DONE_TAIL = "_STO_DONE."
-PATIENT_NUM = 70
+PATIENT_NUM = 100
 counter = {
     'MI': 0,
     'HF': 0,

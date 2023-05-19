@@ -126,9 +126,11 @@ class VFInfServerBolt(storm.BasicBolt):
 
             if history[patientID]['p'] >= 19:
                 history[patientID]['p'] = 0
+                print(f'VF Inference SUCCESS: {patientID} with 19 times {result}', file=sys.stderr)
                 storm.emit([patientID, SYMPTOM, 1])
             elif history[patientID]['n'] >= 19:
                 history[patientID]['n'] = 0
+                print(f'VF Inference SUCCESS: {patientID} with 19 times {result}', file=sys.stderr)
                 storm.emit([patientID, SYMPTOM, 0])
         
 VFInfServerBolt().run()

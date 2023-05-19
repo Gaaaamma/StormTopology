@@ -63,7 +63,7 @@ ui.port: 6750
 # Set worker heap size
 worker.childopts: "-Xmx2g"
 
-#============================ ShellBolt python version =============================#
+#============================ ShellBolt python version (Pyenv)=============================#
 # Note that in ShellBolt, this might execute /usr/bin/python (Guess)
 # So it won't be affected by pyenv to switch versions between python
 super("python", "myExector.py")  
@@ -90,3 +90,13 @@ super("~/.pyenv/shims/python", "myExecutor.py")
 # Finally, put it at /usr/pystart.sh (Remember to chmod +x this file)
 # Now in ShellBolt, the actually command is
 super("/usr/pystart.sh", "myExector.py")  
+
+#============================ ShellBolt python version (Miniconda)=============================#
+# We also need a shellscript to help us execute python under a certain user 
+# because executing $HOME/... or ~/... is invalid
+super("/usr/hfonlyStart.sh", "hfInfServerBolt.py");
+
+# The content in such file is like this. And we can know that if we execute python under miniconda3/envs/MYENV/bin/python
+# we can use the package and dependencies under this environment
+~/miniconda3/envs/hfonly/bin/python $1
+
