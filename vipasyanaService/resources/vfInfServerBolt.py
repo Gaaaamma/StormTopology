@@ -5,7 +5,6 @@ import os
 import sys
 import requests
 import scipy.signal as ss
-from lvsdclassifier import LVSDClassifier
 import storm
 from VF_Inference import Model
 
