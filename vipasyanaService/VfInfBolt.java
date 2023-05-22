@@ -10,7 +10,7 @@ public class VfInfBolt extends ShellBolt implements IRichBolt {
          *  ~/.pyenv/shims/python $1 (Use python under $HOME/.pyenv to execute $1)
          *  Or /usr/bin/python $1    (Use python default version to execut $1)
          */
-        super("/usr/pystart.sh", "vfInfServerBolt.py");
+        super("/usr/vfonlyStart.sh", "vfInfServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
