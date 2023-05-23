@@ -18,11 +18,10 @@ import com.google.gson.Gson;
 
  public class EcgdataSpout extends BaseRichSpout {
     SpoutOutputCollector spoutOutputCollector;
-	int period = 10000;
+	int period = 1000;
 	String apiRequest = "http://192.168.2.132:32777/users/ecg/rawdata/";
 	int seconds = 10;
-	int counts = 100;
-	int multiple = 1;
+	int counts = 1;
 	Gson gson;
 
     @Override
@@ -89,19 +88,17 @@ import com.google.gson.Gson;
 						}
 
 						// Emit
-						for (int k = 0; k < multiple; k++) {
-							this.spoutOutputCollector.emit(new Values(patient + "_" + String.valueOf(k), seconds, 
-							timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
-							timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1),
-							timestamps[2], diff1.get(2), diff2.get(2), diff3.get(2),
-							timestamps[3], diff1.get(3), diff2.get(3), diff3.get(3),
-							timestamps[4], diff1.get(4), diff2.get(4), diff3.get(4),
-							timestamps[5], diff1.get(5), diff2.get(5), diff3.get(5),
-							timestamps[6], diff1.get(6), diff2.get(6), diff3.get(6),
-							timestamps[7], diff1.get(7), diff2.get(7), diff3.get(7),
-							timestamps[8], diff1.get(8), diff2.get(8), diff3.get(8),
-							timestamps[9], diff1.get(9), diff2.get(9), diff3.get(9)));
-						}
+						this.spoutOutputCollector.emit(new Values(patient, seconds, 
+						timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
+						timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1),
+						timestamps[2], diff1.get(2), diff2.get(2), diff3.get(2),
+						timestamps[3], diff1.get(3), diff2.get(3), diff3.get(3),
+						timestamps[4], diff1.get(4), diff2.get(4), diff3.get(4),
+						timestamps[5], diff1.get(5), diff2.get(5), diff3.get(5),
+						timestamps[6], diff1.get(6), diff2.get(6), diff3.get(6),
+						timestamps[7], diff1.get(7), diff2.get(7), diff3.get(7),
+						timestamps[8], diff1.get(8), diff2.get(8), diff3.get(8),
+						timestamps[9], diff1.get(9), diff2.get(9), diff3.get(9)));
 
 						// System.out.println("A: ");
 						// System.out.println(patient);
@@ -148,19 +145,17 @@ import com.google.gson.Gson;
 				}
 				
 				// Emit
-				for (int k = 0; k < multiple; k++) {
-					this.spoutOutputCollector.emit(new Values(patient + "_" + String.valueOf(k), seconds, 
-					timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
-					timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1),
-					timestamps[2], diff1.get(2), diff2.get(2), diff3.get(2),
-					timestamps[3], diff1.get(3), diff2.get(3), diff3.get(3),
-					timestamps[4], diff1.get(4), diff2.get(4), diff3.get(4),
-					timestamps[5], diff1.get(5), diff2.get(5), diff3.get(5),
-					timestamps[6], diff1.get(6), diff2.get(6), diff3.get(6),
-					timestamps[7], diff1.get(7), diff2.get(7), diff3.get(7),
-					timestamps[8], diff1.get(8), diff2.get(8), diff3.get(8),
-					timestamps[9], diff1.get(9), diff2.get(9), diff3.get(9)));
-				}
+				this.spoutOutputCollector.emit(new Values(patient, seconds, 
+				timestamps[0], diff1.get(0), diff2.get(0), diff3.get(0),
+				timestamps[1], diff1.get(1), diff2.get(1), diff3.get(1),
+				timestamps[2], diff1.get(2), diff2.get(2), diff3.get(2),
+				timestamps[3], diff1.get(3), diff2.get(3), diff3.get(3),
+				timestamps[4], diff1.get(4), diff2.get(4), diff3.get(4),
+				timestamps[5], diff1.get(5), diff2.get(5), diff3.get(5),
+				timestamps[6], diff1.get(6), diff2.get(6), diff3.get(6),
+				timestamps[7], diff1.get(7), diff2.get(7), diff3.get(7),
+				timestamps[8], diff1.get(8), diff2.get(8), diff3.get(8),
+				timestamps[9], diff1.get(9), diff2.get(9), diff3.get(9)));
 
 				// System.out.println("B: ");
 				// System.out.println(patient);
