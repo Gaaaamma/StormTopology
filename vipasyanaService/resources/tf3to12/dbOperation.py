@@ -31,10 +31,13 @@ class MongoDB():
             collection = self.mydb['user']
             query = {'userId': userId}
             result = collection.find_one(query)
-            self.patient_time[patient_info['userId']] = result['lasttime_12lead']
+            if result is None:
+                return patient_info, False
+            else:
+                self.patient_time[patient_info['userId']] = result['lasttime_12lead']
                 
         self.patient_info = [patient_info]
-        return patient_info
+        return patient_info, True
     
     def find_rr(self, patientInfo, datas):
         '''

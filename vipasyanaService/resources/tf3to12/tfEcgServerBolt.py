@@ -108,7 +108,10 @@ class TFEcgServerBolt(storm.BasicBolt):
         
         # Packing patientInfo 
         try:
-            patientInfo = mongo.pack_patientInfo(patientID, t10)
+            patientInfo, exist = mongo.pack_patientInfo(patientID, t10)
+            if not exist:
+                print(f'Error: {patientID} does not exist in ecg.user => ignore', file=sys.stderr)
+                return
         except KeyError as e:
             print(f'Error : pack_patientInfo - {e} ', file=sys.stderr)
             return
