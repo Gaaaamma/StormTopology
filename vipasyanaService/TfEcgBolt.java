@@ -6,9 +6,14 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 
 public class TfEcgBolt extends ShellBolt implements IRichBolt {
     public TfEcgBolt() {
-        /*  Content of /usr/pystart.sh
-         *  ~/.pyenv/shims/python $1 (Use python under $HOME/.pyenv to execute $1)
-         *  Or /usr/bin/python $1    (Use python default version to execut $1)
+        /*
+         * We are now using miniconda to divide the execution environment
+         * When we are under a certain conda environment 'MYENV' and execute python, we are
+         * actually executing python under /home/$USER/miniconda3/envs/MYENV/bin/python
+         * 
+         * The reason executing tf3to12Start.sh is that we can't execute 
+         * super("$HOME/...") or super("~/...") to assign python under this User
+         * So the content of start.sh is to execute miniconda3/python under this User 
          */
         super("/usr/tf3to12Start.sh", "./tf3to12/tfEcgServerBolt.py");
     }
