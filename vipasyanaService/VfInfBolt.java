@@ -6,11 +6,16 @@ import org.apache.storm.tuple.Fields;
 
 public class VfInfBolt extends ShellBolt implements IRichBolt {
     public VfInfBolt() {
-        /*  Content of /usr/pystart.sh
-         *  ~/.pyenv/shims/python $1 (Use python under $HOME/.pyenv to execute $1)
-         *  Or /usr/bin/python $1    (Use python default version to execut $1)
+        /*
+         * We are now using miniconda to divide the execution environment
+         * When we are under a certain conda environment 'MYENV' and execute python, we are
+         * actually executing python under /home/$USER/miniconda3/envs/MYENV/bin/python
+         * 
+         * The reason executing vfonlyStart.sh is that we can't execute 
+         * super("$HOME/...") or super("~/...") to assign python under this User
+         * So the content of start.sh is to execute miniconda3/python under this User 
          */
-        super("/usr/vfonlyStart.sh", "vfInfServerBolt.py");
+        super("/usr/vfonlyStart.sh", "./vfonly/vfInfServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
