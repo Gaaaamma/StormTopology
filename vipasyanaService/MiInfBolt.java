@@ -10,7 +10,7 @@ public class MiInfBolt extends ShellBolt implements IRichBolt {
          *  ~/.pyenv/shims/python $1 (Use python under $HOME/.pyenv to execute $1)
          *  Or /usr/bin/python $1    (Use python default version to execut $1)
          */
-        super("/usr/mionlyStart.sh", "miInfServerBolt.py");
+        super("/usr/mionlyStart.sh", "./mionly/miInfServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

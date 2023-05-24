@@ -6,7 +6,7 @@ import org.apache.storm.tuple.Fields;
 
 public class MiPrepBolt extends ShellBolt implements IRichBolt {
     public MiPrepBolt() {
-        super("python", "miPrepServerBolt.py");
+        super("/usr/mionlyStart.sh", "./mionly/miPrepServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

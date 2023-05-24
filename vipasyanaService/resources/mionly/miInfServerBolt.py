@@ -28,7 +28,7 @@ MAX_MESSAGE_LENGTH = 256*1024*1024 # (Byte) equals to 256 MB
 
 # Load model
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-MODEL_NAME = "0041-0.94762.hdf5"
+MODEL_NAME = "./mionly/0041-0.94762.hdf5"
 model = load_model(MODEL_NAME, compile=False)  
 model.compile(loss='binary_crossentropy', optimizer=Adam())
 print(time.ctime() + ' Success: MI model loading', file=sys.stderr)

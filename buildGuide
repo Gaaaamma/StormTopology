@@ -63,6 +63,26 @@ ui.port: 6750
 # Set worker heap size
 worker.childopts: "-Xmx2g"
 
+#============================ ShellBolt Working directory =================================#
+# Note that under Apche Storm ShellBolt, the working directory of python file will be
+# the resources directory in the .jar file which you submit
+# For example, we can see transfer3to12 service (TfEcgBolt.java)
+super("/usr/tf3to12Start.sh", "./tf3to12/tfEcgServerBolt.py");
+
+# It will execute tfEcgServerBolt.py under the path of ./resources/./tf3to12/tfEcgServerBolt.py
+# Thus, all your python file might assume that ./resources is your working directory.
+# We can see that in resources/tf3to12/tfEcgServerBolt.py 
+args_parameter() => ('--modelPath',type=str,default='./tf3to12/step99500.ckpt.meta')
+
+# It loads model from ./tf3to12/XXX.ckpt.meta rather than ./XXX.ckpt.meta even they are in the same directory
+# If you load the path ./XXX.ckpt.meta directly, you will get error message telling you that you are not able to find the file
+
+# NOTE: But when you are importing other files in python, you can import directly as they are
+# in the same directory (See resources/tf3to12/tfEcgServerBolt.py)
+from torch_model import Model3to12
+from dbOperation import MongoDB 
+# That is weird, but just follow it
+
 #============================ ShellBolt python version (Pyenv)=============================#
 # Note that in ShellBolt, this might execute /usr/bin/python (Guess)
 # So it won't be affected by pyenv to switch versions between python
