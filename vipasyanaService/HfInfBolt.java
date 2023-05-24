@@ -15,7 +15,7 @@ public class HfInfBolt extends ShellBolt implements IRichBolt {
          * super("$HOME/...") or super("~/...") to assign python under this User
          * So the content of start.sh is to execute miniconda3/python under this User 
          */
-        super("/usr/hfonlyStart.sh", "hfInfServerBolt.py");
+        super("/usr/hfonlyStart.sh", "./hfonly/hfInfServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

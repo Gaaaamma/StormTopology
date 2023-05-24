@@ -11,7 +11,7 @@ class LVSDClassifier:
     def __init__(self, checkpoint):
         self.device = torch.device('cpu')
         self.model = moECG(ResNet1D18SimCLR(in_c=3))
-        checkpoint = torch.load(os.path.join('weights', checkpoint), map_location=self.device)['state_dict']
+        checkpoint = torch.load(os.path.join('hfonly/weights', checkpoint), map_location=self.device)['state_dict']
         self.model.load_state_dict(checkpoint)
         self.predCounter = 0
         self.predSum = 0
