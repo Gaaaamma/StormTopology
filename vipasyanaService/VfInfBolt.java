@@ -20,7 +20,7 @@ public class VfInfBolt extends ShellBolt implements IRichBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         // TODO Auto-generated method stub
-        declarer.declare(new Fields("patientID", "symptom", "detected"));
+        declarer.declare(new Fields("patientID", "symptom", "detected", "timestamp"));
     }
 
     @Override

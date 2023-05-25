@@ -43,7 +43,7 @@ class VFInfServerBolt(storm.BasicBolt):
         startTime = time.time()
         patientID = tup.values[0]
         #seconds = tup.values[1]
-        #t1 = tup.values[2]
+        t1 = tup.values[2]
         #t1d1 = tup.values[3]
         t1d2 = tup.values[4]
         #t1d3 = tup.values[5]
@@ -113,7 +113,7 @@ class VFInfServerBolt(storm.BasicBolt):
                 requests.get(INFAVG_URL + str(round(sumTime / counter, 2)))
                 sumTime = 0
                 counter = 0
-            storm.emit([patientID, SYMPTOM, result])
+            storm.emit([patientID, SYMPTOM, result, t1])
         else:
             # Skip activation function: 'sigmoid(x) >= 0.5' is equivalent to 'x > 0'
             if y > 0:
@@ -126,10 +126,10 @@ class VFInfServerBolt(storm.BasicBolt):
             if history[patientID]['p'] >= 19:
                 history[patientID]['p'] = 0
                 print(f'VF Inference SUCCESS: {patientID} with 19 times {result}', file=sys.stderr)
-                storm.emit([patientID, SYMPTOM, 1])
+                storm.emit([patientID, SYMPTOM, 1, t1])
             elif history[patientID]['n'] >= 19:
                 history[patientID]['n'] = 0
                 print(f'VF Inference SUCCESS: {patientID} with 19 times {result}', file=sys.stderr)
-                storm.emit([patientID, SYMPTOM, 0])
+                storm.emit([patientID, SYMPTOM, 0, t1])
         
 VFInfServerBolt().run()

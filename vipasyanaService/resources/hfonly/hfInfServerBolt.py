@@ -121,6 +121,6 @@ class HFInfServerBolt(storm.BasicBolt):
                 requests.get(INFAVG_URL + str(round(sumTime / counter, 2)))
                 sumTime = 0
                 counter = 0
-            storm.emit([patientID, SYMPTOM, result])
+            storm.emit([patientID, SYMPTOM, result, t1])
         
 HFInfServerBolt().run()
