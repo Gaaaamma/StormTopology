@@ -109,9 +109,10 @@ def doInference(request):
     else:
         # Do mi inference
         # Preprocessing
-        x = np.stack([diff_1,diff_2,diff_3], axis=-1).reshape(-1,2560,3) # 預設為一次一個人做檢測
-        x_strip = F.make_2d_temp(x, verbose=0)
-        x_stft = F.stft(x, fs=256, step=25)[:,:,1:92,:]
+        ecg = np.stack([np.concatenate([diff_1, diff_2, diff_3], axis=0)], axis=-1).reshape(1, -1, 3)
+        ecg = signal.resample(ecg, 2560, axis=1)
+        x_strip = F.make_2d_temp(ecg, verbose=0)
+        x_stft = F.stft(ecg, fs=256, step=25)[:,:,1:92,:]
         timeCheckPoint['preprocessTime'] = time.time()
         
         # Inference
