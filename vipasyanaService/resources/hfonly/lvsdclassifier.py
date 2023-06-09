@@ -8,9 +8,9 @@ import sys
 from models.resnet_simclr import moECG, ResNet1D18SimCLR
 
 class LVSDClassifier:
-    def __init__(self, checkpoint):
-        self.device = torch.device('cpu')
-        self.model = moECG(ResNet1D18SimCLR(in_c=3))
+    def __init__(self, checkpoint, device):
+        self.device = device
+        self.model = moECG(ResNet1D18SimCLR(in_c=3)).to(self.device)
         checkpoint = torch.load(os.path.join('hfonly/weights', checkpoint), map_location=self.device)['state_dict']
         self.model.load_state_dict(checkpoint)
         self.predCounter = 0
@@ -86,7 +86,7 @@ class LVSDClassifier:
         self.model.eval()
         with torch.no_grad():
             for X in dataloader:
-                X = X[0]
+                X = X[0].to(self.device)
                 pred = self.model(X)
                 model_pred.append(pred.argmax(1))
 

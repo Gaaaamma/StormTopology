@@ -5,6 +5,7 @@ import os
 import sys
 import requests
 import scipy.signal as ss
+import torch
 from lvsdclassifier import LVSDClassifier
 import storm
 
@@ -24,6 +25,12 @@ SEG_LEN = 7                    # 資料長度(秒)
 SAMPLE_RATE = 500               # 資料取樣率(點/秒)
 TOLERANCE = 100
 CHECKPOINT = "resnet18_contrastive_transfer_ECG.pth.tar"
+if torch.cuda.is_available():
+    print(time.ctime() + ' HF model using CUDA', file=sys.stderr)
+    DEVICE = torch.device('cuda')
+else:
+    print(time.ctime() + ' HF model using CPU', file=sys.stderr)
+    DEVICE = torch.device('cpu')
 
 #******************************************#
 #             Server service               #
@@ -59,7 +66,7 @@ def packingData(dataset):
 #******************************************#
 #                Load Model                #
 #******************************************#
-lvsdClf = LVSDClassifier(CHECKPOINT)
+lvsdClf = LVSDClassifier(CHECKPOINT, DEVICE)
 print(time.ctime() + ' Success: HF model loading', file=sys.stderr)
 
 class HFInfServerBolt(storm.BasicBolt):
