@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -18,6 +19,11 @@ import com.google.gson.Gson;
 
  public class EcgdataSpout extends BaseRichSpout {
     SpoutOutputCollector spoutOutputCollector;
+	boolean latencyTest = false;
+	int testTimes = 5;
+	int[] testCounts = {1,2,5,10,50,100,150,200,300};
+	Map<Integer, Float> testResults = new HashMap<>();
+
 	int period = 1000;
 	String apiRequest = "http://192.168.2.132:32777/users/ecg/rawdata/";
 	int seconds = 10;
@@ -34,6 +40,18 @@ import com.google.gson.Gson;
     @Override
     public void nextTuple() {
         // TODO Auto-generated method stub
+		if (latencyTest) {
+			LatencyTester();
+			for (int i = 0; i < testCounts.length ; i++) {
+				if (testResults.containsKey(testCounts[i])) {
+					Float value = testResults.get(testCounts[i]);
+					System.out.println("Counts: " + testCounts[i] + " => " + value + " ms => " + (value / testCounts[i]) + " ms/one");
+				} else {
+					System.out.println("Lack result counts: " + testCounts[i]);
+				}
+			}
+			latencyTest = false;
+		}
         Utils.sleep(period);
         try { 
             String target = apiRequest + String.valueOf(seconds) + "/" + String.valueOf(counts);
@@ -227,6 +245,29 @@ import com.google.gson.Gson;
 			throw e;
 		}
 		return sb.toString();
+	}
+
+	public void LatencyTester() {
+		try {
+			for (int i = 0; i < testCounts.length; i++) {
+				long sum = 0;
+				String target = apiRequest + String.valueOf(seconds) + "/" + String.valueOf(testCounts[i]);
+				Gson gson = new Gson();
+				System.out.println("Testing: " + target);;
+				for (int t = 0; t < testTimes; t++) {
+					long t1 = System.currentTimeMillis();
+					EcgRawData rawData = gson.fromJson(httpRequest("GET", target, target), EcgRawData.class);
+					long t2 = System.currentTimeMillis();
+					sum += (t2 - t1);
+				}
+				float avg = (float)sum / testTimes;
+				testResults.put(testCounts[i], avg);
+				// System.out.println("Latency: " + String.valueOf(testResults[i]));
+				// System.out.println("PerPatient: " + String.valueOf(testResults[i] / testCounts[i]) + "\n");
+			}
+		} catch (Exception e) {  
+			System.out.println("Spout exception: " + e);
+		}
 	}
  }
  
