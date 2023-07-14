@@ -2,6 +2,7 @@ import storm
 import time
 import numpy as np
 from scipy import signal
+import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
 from keras.optimizers import Adam
@@ -32,6 +33,7 @@ MODEL_NAME = "./mionly/0041-0.94762.hdf5"
 model = load_model(MODEL_NAME, compile=False)  
 model.compile(loss='binary_crossentropy', optimizer=Adam())
 print(time.ctime() + ' Success: MI model loading', file=sys.stderr)
+print('GPU resouce usage: ' +  str(tf.test.is_gpu_available()), file=sys.stderr)
 
 #******************************************#
 #             other functions              #
@@ -112,7 +114,10 @@ def doInference(request):
         ecg = np.stack([np.concatenate([diff_1, diff_2, diff_3], axis=0)], axis=-1).reshape(1, -1, 3)
         ecg = signal.resample(ecg, 2560, axis=1)
         x_strip = F.make_2d_temp(ecg, verbose=0)
-        x_stft = F.stft(ecg, fs=256, step=25)[:,:,1:92,:]
+        #x_stft = F.stft(ecg, fs=256, step=25)[:,:,1:92,:]
+        _,_,x_stft = signal.stft(ecg, fs=256, nperseg=256, noverlap=231, nfft=256, boundary=None, padded=False, axis=1)
+        x_stft = np.abs(x_stft.transpose((0,1,3,2)))[:,:120,1:92,:]
+
         timeCheckPoint['preprocessTime'] = time.time()
         
         # Inference

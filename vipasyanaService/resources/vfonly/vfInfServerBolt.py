@@ -7,6 +7,7 @@ import requests
 import scipy.signal as ss
 import storm
 from VF_Inference import Model
+import tensorflow as tf
 
 #******************************************#
 #                 statistic                #
@@ -34,6 +35,7 @@ history = {}
 #******************************************#
 model = Model(CHECKPOINT)
 print(time.ctime() + ' Success: VF model loading', file=sys.stderr)
+print('GPU resouce usage: ' +  str(tf.test.is_gpu_available()), file=sys.stderr)
 
 class VFInfServerBolt(storm.BasicBolt):
     def process(self, tup):
@@ -98,16 +100,18 @@ class VFInfServerBolt(storm.BasicBolt):
         ecg = ss.resample(ecg, 1500).reshape(1, 1500, 1)
         _,_,spec=ss.stft(ecg,250,nperseg=250,noverlap=250-250//4,boundary=None,padded=False,axis=1)
         x = np.moveaxis(np.abs(spec),-1,1)
+        stftTime = time.time()
         
         # Inference 
         y =  model.predict(x)
+        predictTime = time.time()
         result = 1 if y > 0 else 0
         history[patientID]['last'] = t6
 
         if STATISTIC_MODE:
             sumTime += (time.time() - startTime) * 1000
             counter += 1
-            print(f'VF Inference SUCCESS: {patientID} with result = {result}', file=sys.stderr)
+            print(f'VF Inference SUCCESS: {patientID} with result = {result} (STFT, Pred)=({(stftTime - startTime)*1000}ms, {(predictTime-stftTime)*1000}ms)', file=sys.stderr)
 
             if counter % CALCULATE_AVG__NUM == 0:
                 requests.get(INFAVG_URL + str(round(sumTime / counter, 2)))
