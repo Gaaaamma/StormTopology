@@ -13,8 +13,18 @@ from dbOperation import MongoDB
 #******************************************#
 INFAVG_URL = "http://192.168.2.132:32777/storm/timestamp/TF_InfAVG_" + str(os.getpid()) + "_"
 CALCULATE_AVG__NUM = 100
+STATISTIC = True
 sumTime = 0
 counter = 0
+
+def statisticTime(patientID, startTime, packTime, rrTime, transferTime, synthesisTime):
+    latency = round((synthesisTime - startTime) * 1000, 2)
+    pack = round((packTime - startTime) * 1000, 2)
+    rr = round((rrTime - packTime) * 1000, 2)
+    transfer = round((transferTime - rrTime) * 1000, 2)
+    synthesis = round((synthesisTime - transferTime) * 1000, 2)
+    portion = round(transfer / latency * 100 ,2)
+    print(f'PaitnetID: {patientID}\n  Latency: {latency} ms\n  PackTime: {pack} ms\n  RRTime: {rr} ms\n  TransferTime: {transfer} ms\n  SynthesisTime: {synthesis} ms\n  Portion: {portion}%\n', file=sys.stderr)
 
 #******************************************#
 #                Load Model                #
@@ -52,7 +62,7 @@ class TFEcgServerBolt(storm.BasicBolt):
     def process(self, tup):
         global counter
         global sumTime
-        # startTime = time.time()
+        startTime = time.time()
         patientID = tup.values[0]
         seconds = tup.values[1]
         
@@ -129,6 +139,7 @@ class TFEcgServerBolt(storm.BasicBolt):
                  {'Ecg_time': t9, 'Diff_1': t9d1, 'Diff_2': t9d2, 'Diff_3': t9d3},
                  {'Ecg_time': t10, 'Diff_1': t10d1, 'Diff_2': t10d2, 'Diff_3': t10d3}]
         try:
+            packTime = time.time()
             r_start_time, r_decimal, test_in = mongo.find_rr(patientInfo, datas) 
         except:
             print(f'Error: find_rr', file=sys.stderr)
@@ -149,15 +160,21 @@ class TFEcgServerBolt(storm.BasicBolt):
         
         # Data_output = 
         try:
+            rrTime = time.time()
             Data_output = model.transfer(inf_in)
+            transferTime = time.time()
         except:
             print(f'Error: transfer(inf_in)', file=sys.stderr)
             return
         
         try:
-            mongo.ECG_Update(patientID, Data_output)    
+            mongo.ECG_Update(patientID, Data_output)  
+            synthesisTime = time.time()  
         except:
             print(f'Error: ECG_Update', file=sys.stderr)
             return
+        
+        if STATISTIC:
+            statisticTime(patientID, startTime, packTime, rrTime, transferTime, synthesisTime)
                 
 TFEcgServerBolt().run()
