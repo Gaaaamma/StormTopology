@@ -5,6 +5,7 @@ BOLT_MI_PREP = MiPrepBolt.class
 BOLT_MI_INF = MiInfBolt.class
 BOLT_HF_INF = HfInfBolt.class
 BOLT_VF_INF = VfInfBolt.class
+BOLT_FAKE = FakeBolt.class
 BOLT_STORE = StoreBolt.class
 TOPO = VipasyanaServiceTopology.class
 ECG_RAW_DATA = EcgRawData.class
@@ -17,8 +18,8 @@ PYTHON_DEP = resources
 
 all: $(FINAL_JAR)
 
-$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_TF_ECG) $(BOLT_MI_PREP) $(BOLT_MI_INF) $(BOLT_HF_INF) $(BOLT_VF_INF) $(BOLT_STORE) $(TOPO)
-	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_TF_ECG) $(BOLT_MI_PREP) $(BOLT_MI_INF) $(BOLT_HF_INF) $(BOLT_VF_INF) $(BOLT_STORE) $(TOPO) $(PYTHON_DEP)
+$(FINAL_JAR): $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_TF_ECG) $(BOLT_MI_PREP) $(BOLT_MI_INF) $(BOLT_HF_INF) $(BOLT_VF_INF) $(BOLT_FAKE) $(BOLT_STORE) $(TOPO)
+	jar cvf $@ $(STORM_DEP) $(JSON_DEP) $(DATA_OBJ) $(ECG_RAW_DATA) $(SPOUT) $(BOLT_TF_ECG) $(BOLT_MI_PREP) $(BOLT_MI_INF) $(BOLT_HF_INF) $(BOLT_VF_INF) $(BOLT_FAKE) $(BOLT_STORE) $(TOPO) $(PYTHON_DEP)
 
 $(DATA_OBJ): DataObject.java
 	javac $<
@@ -42,6 +43,9 @@ $(BOLT_HF_INF): HfInfBolt.java
 	javac -cp $(STORM_DEP) $<
 
 $(BOLT_VF_INF): VfInfBolt.java
+	javac -cp $(STORM_DEP) $<
+
+$(BOLT_FAKE): FakeBolt.java
 	javac -cp $(STORM_DEP) $<
 
 $(BOLT_STORE): StoreBolt.java
