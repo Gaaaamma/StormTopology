@@ -16,6 +16,7 @@ public class VfInfBolt extends ShellBolt implements IRichBolt {
          * So the content of start.sh is to execute miniconda3/python under this User 
          */
         super("/usr/vfonlyStart.sh", "./vfonly/vfInfServerBolt.py");
+        // super("/usr/gputestStart.sh", "./vfonly/vfInfServerBolt.py");
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {

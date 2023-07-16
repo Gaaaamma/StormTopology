@@ -111,7 +111,7 @@ class VFInfServerBolt(storm.BasicBolt):
         if STATISTIC_MODE:
             sumTime += (time.time() - startTime) * 1000
             counter += 1
-            print(f'VF Inference SUCCESS: {patientID} with result = {result} (STFT, Pred)=({(stftTime - startTime)*1000}ms, {(predictTime-stftTime)*1000}ms)', file=sys.stderr)
+            print(f'VF Inference SUCCESS: {patientID} with result = {result} (STFT, Pred)=({round((stftTime - startTime)*1000, 2)}ms, {round((predictTime-stftTime)*1000, 2)}ms)', file=sys.stderr)
 
             if counter % CALCULATE_AVG__NUM == 0:
                 requests.get(INFAVG_URL + str(round(sumTime / counter, 2)))
