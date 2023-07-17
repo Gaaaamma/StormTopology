@@ -1,6 +1,15 @@
+import argparse
 from decimal import Decimal
-FILE_NAME = "stormTimestamp.txt"
-REQUEST_PATIENT_NUM = 70
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file', default='stormTimestamp.txt')
+parser.add_argument('-p', '--patient', help="Request patient numbers", type=int, default=100)
+parser.add_argument('-i', '--ignore', help="Ignore the first x line to warm up the system", type=int, default=0)
+
+args = parser.parse_args()
+FILE_NAME = args.file
+REQUEST_PATIENT_NUM = args.patient
+IGNORE_FIRST_I_RESULT = args.ignore
 
 # Open file
 fp = open(FILE_NAME, "r")
@@ -11,26 +20,30 @@ getStoreDone = {
     'MI': [],
     'HF': [],
     'VF': [],
-    'AF': []
+    'AF': [],
+    'TF': []
 }
 
 infDic = {
     'MI': {}, # pid: ms
     'HF': {},
     'VF': {},
-    'AF': {}
+    'AF': {},
+    'TF': {}
 }
 countDic = {
     'MI': {}, # pid: numbers
     'HF': {},
     'VF': {},
-    'AF': {}
+    'AF': {},
+    'TF': {}
 }
 diff = {
     'MI': [], # diff time between getEcg and STO_DONE
     'HF': [],
     'VF': [],
-    'AF': []
+    'AF': [],
+    'TF': []
 }
 
 # Parsing data
@@ -62,7 +75,11 @@ for symptom in getStoreDone:
     index = 1
     preGetTime = 0
     preDoneTime = 0
+    ignore = 0
     for i in range(0, len(getStoreDone[symptom])):
+        if (ignore < IGNORE_FIRST_I_RESULT):
+            ignore += 1
+            continue
         print(f'{symptom} - {index}', end= ': ')
         print(getEcgTime[i], end = ', ')
         print(getStoreDone[symptom][i], end = " => ")
@@ -101,7 +118,7 @@ for symptom in getStoreDone:
     print("AvgLatency: " + str(avg) + "ms")
     print("MinLatency: " + str(minLatency) + "ms")
     print("MaxLatency: " + str(maxLatency) + "ms")
-    period = getStoreDone[symptom][len(getStoreDone[symptom]) - 1] - getEcgTime[0]
+    period = getStoreDone[symptom][len(getStoreDone[symptom]) - 1] - getEcgTime[IGNORE_FIRST_I_RESULT]
     print(f"Time cost: {period}ms ({round(period / 1000, 2)}sec)")
     print(f"Throughput: {round(allPatient / round(period / 1000, 2) * 10, 2)} (people/10sec)")
     for p in infDic[symptom]:
