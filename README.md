@@ -4,7 +4,8 @@ If you want to use this system, you must install
 - Apache Storm 2.4.0
 - Java openjdk 8
 
-You can follow the install instruction from the office
+You can follow the install instruction from the office<br>
+(There is also installation command I gave below)
 
 **Now, you are able to use Apache storm to create your own topology.<br>**
 **If you want to use the topology of vipasyana service, you must do more configuration**
@@ -12,6 +13,65 @@ You can follow the install instruction from the office
 - Create virtual environment of each ai inference service (Ex: hfonly, mionly, vfonly, tf3to12)
 - Install corresponding dependencies in the virtual environment
 - Move xxxStart.sh to /usr/xxxStart.sh, and make it executable
+
+## Install Zookeeper
+1. Go to Apache-Zookeeper website the get the url of installation<br>
+for example (https://dlcdn.apache.org/zookeeper/zookeeper-3.8.2/apache-zookeeper-3.8.2-bin.tar.gz)<br>
+You can use the command below to download the file
+```shell
+wget https://dlcdn.apache.org/zookeeper/zookeeper-3.8.2/apache-zookeeper-3.8.2-bin.tar.gz 
+```
+
+2. Extract the file, you will get Zookeeper
+```shell
+tar -xvf apache-zookeeper-3.8.2-bin.tar.gz
+```
+
+3. Set the config file of Zookeeper by your own
+```shell
+vim /THE/PATH/TO/ZOOKEEPER/conf/zoo.cfg
+``` 
+
+4. Suggestion config
+```shell
+# The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit=5
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just
+# example sakes.
+dataDir=/home/wnalb/zk/zkDataDir
+dataLogDir=/home/wnlab/zk/zkLogDir
+# the port at which the clients will connect
+clientPort=2181
+# the maximum number of client connections.
+# increase this if you need to handle more clients
+#maxClientCnxns=60
+#
+# Be sure to read the maintenance section of the
+# administrator guide before turning on autopurge.
+#
+# http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+#
+# The number of snapshots to retain in dataDir
+autopurge.snapRetainCount=20
+# Purge task interval in hours
+# Set to "0" to disable auto purge feature
+autopurge.purgeInterval=24
+
+## Metrics Providers
+#
+# https://prometheus.io Metrics Exporter
+#metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider
+#metricsProvider.httpPort=7000
+#metricsProvider.exportJvmInfo=true
+```
+5. Now, you can follow (How to Start Up Storm Cluster) to start ZooKeeper
 
 ## Check system Java version
 **Note: Apache Storm 2.4.0 work fine with openjdk-8-jdk**
