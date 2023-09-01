@@ -19,15 +19,18 @@ import com.google.gson.Gson;
 
  public class EcgdataSpout extends BaseRichSpout {
     SpoutOutputCollector spoutOutputCollector;
+	boolean slowStart = true;
+	int slowStartTime = 60000;
+
 	boolean latencyTest = false;
 	int testTimes = 5;
 	int[] testCounts = {1,2,5,10,50,100,150,200,300};
 	Map<Integer, Float> testResults = new HashMap<>();
 
-	int period = 1000;
+	int period = 10000;
 	String apiRequest = "http://192.168.2.132:32777/users/ecg/rawdata/";
 	int seconds = 10;
-	int counts = 1;
+	int counts = 100;
 	Gson gson;
 
     @Override
@@ -40,6 +43,10 @@ import com.google.gson.Gson;
     @Override
     public void nextTuple() {
         // TODO Auto-generated method stub
+		if (slowStart) {
+			Utils.sleep(slowStartTime);
+			slowStart = false;
+		}
 		if (latencyTest) {
 			LatencyTester();
 			for (int i = 0; i < testCounts.length ; i++) {
