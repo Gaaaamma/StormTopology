@@ -247,3 +247,7 @@ we can use the package and dependencies under this environment<br>
 ```shell
 ~/miniconda3/envs/hfonly/bin/python $1
 ```
+
+## Resource
+Slide: https://docs.google.com/presentation/d/1j0hpGSWLX0SCssd0z7tjVW5ohR_3aJ12VJipMIcS5_8/edit#slide=id.g27e31dba315_0_0
+Paper: https://drive.google.com/drive/folders/1pBse0Xx0vMjRYdTMQSpXaplGuhp5b2We
